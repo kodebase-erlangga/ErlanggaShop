@@ -1,0 +1,42 @@
+<resources>
+    <!-- Nama Aplikasi -->
+    <string name="app_name">Navigation Drawer</string>
+
+    <!-- String untuk Navigation Drawer -->
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
+
+    <!-- Placeholder Fragment -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Opsi di Settings -->
+    <string-array name="settings_options">
+        <item>Edit Profile</item>
+        <item>Edit Email</item>
+        <item>Edit Password</item>
+    </string-array>
+
+    <!-- String untuk Activity Login -->
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+
+    <!-- Pesan Selamat Datang -->
+    <string name="welcome">Welcome!</string>
+
+    <!-- Pesan Error -->
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be &gt;5 characters</string>
+    <string name="login_failed">Login failed</string>
+
+    <!-- String lainnya -->
+    <string name="logout_message">Logout menu item clicked</string>
+    <string name="logout_success">Logout successful</string>
+
+    <string name="icon_desc">Icon description</string>
+
+    <string name="navigate_next">Navigate Next</string>
+
+</resources>
