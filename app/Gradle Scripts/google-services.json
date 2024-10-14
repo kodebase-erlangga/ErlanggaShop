@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "336009023343",
+    "project_id": "erl-app-be6c0",
+    "storage_bucket": "erl-app-be6c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336009023343:android:1d183d1a391baa5e34a29a",
+        "android_client_info": {
+          "package_name": "com.erlangga.erlshop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwvAdTRkxf1zbwBCAodt6CgNoy3a6ugMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

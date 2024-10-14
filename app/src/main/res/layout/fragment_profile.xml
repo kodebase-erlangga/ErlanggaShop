@@ -5,13 +5,10 @@
     android:layout_height="match_parent"
     tools:context="com.example.erlshop.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <WebView
+        android:id="@+id/webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Profile"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:textColor="@color/lavender"/>
+        android:layout_height="match_parent" />
+
 
 </FrameLayout>
