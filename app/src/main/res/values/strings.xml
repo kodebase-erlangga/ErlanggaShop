@@ -38,5 +38,6 @@
     <string name="icon_desc">Icon description</string>
 
     <string name="navigate_next">Navigate Next</string>
+    <string name="book_cover">Book Cover</string>
 
 </resources>

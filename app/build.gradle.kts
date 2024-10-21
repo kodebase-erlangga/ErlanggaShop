@@ -55,5 +55,7 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
-    implementation("com.android.volley")
+    implementation("com.android.volley:volley:1.2.1")
+    implementation("com.squareup.picasso:picasso:2.71828")
+
 }
