@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -128,7 +127,6 @@ public class KoleksiFragment extends Fragment {
                         showError("Image load error: " + error.getMessage());
                     }
                 });
-
         Volley.newRequestQueue(getContext()).add(imageRequest);
     }
 }

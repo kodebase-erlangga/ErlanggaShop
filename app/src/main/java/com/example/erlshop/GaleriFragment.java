@@ -1,133 +1,127 @@
 package com.example.erlshop;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
-import com.example.erlshop.R;
-
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GaleriFragment extends Fragment {
 
-    private ViewPager viewPager;
+    private RecyclerView recyclerView;
     private BannerAdapter bannerAdapter;
-    private LinearLayout dotIndicatorLayout;
-    private Handler handler;
-    private Runnable updateRunnable;
-    private int currentPage = 0;
-    private Timer timer;
-    private ImageView[] dots;
+    private List<String> imageUrls = new ArrayList<>(); // Menyimpan URL gambar dari API
+    private static final String URL = "https://ebook.erlanggaonline.co.id";
+    private TextView errorTextView;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate layout fragment
         View view = inflater.inflate(R.layout.fragment_galeri, container, false);
 
-        viewPager = view.findViewById(R.id.viewPager);
-        dotIndicatorLayout = view.findViewById(R.id.dotIndicatorLayout);
+        errorTextView = view.findViewById(R.id.errorTextView);
+        recyclerView = view.findViewById(R.id.recyclerView);
 
-        // Tambahkan gambar banner dari drawable
-        ArrayList<Integer> bannerList = new ArrayList<>();
-        bannerList.add(R.drawable.banner1);
-        bannerList.add(R.drawable.banner2);
-        bannerList.add(R.drawable.banner3);
-        bannerList.add(R.drawable.banner4);
+        // Menambahkan layout manager agar gambar-gambar ditampilkan dalam grid
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 kolom
 
-        // Setup adapter
-        bannerAdapter = new BannerAdapter(getContext(), bannerList);
-        viewPager.setAdapter(bannerAdapter);
-
-        // Inisialisasi dot indicator
-        setupDotIndicator(bannerList.size());
-
-        // Listener untuk update dot saat halaman berubah
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                updateDotIndicator(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-
-        // Timer untuk auto-slide
-        handler = new Handler(Looper.getMainLooper());
-        updateRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (currentPage == bannerList.size()) {
-                    currentPage = 0;
-                }
-                viewPager.setCurrentItem(currentPage++, true);
-            }
-        };
-
-        // Mulai auto-slide dengan interval 3 detik
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(updateRunnable);
-            }
-        }, 3000, 3000);
+        // Memanggil method untuk mengambil gambar dari API
+        fetchBanner();
 
         return view;
     }
 
-    // Setup indikator titik sesuai jumlah gambar
-    private void setupDotIndicator(int count) {
-        dots = new ImageView[count];
-        dotIndicatorLayout.removeAllViews();  // Clear any existing dots
+    private void fetchBanner() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            String erlStatusId = jsonResponse.getString("erlStatusId");
+                            if (erlStatusId.equals("true")) {
+                                JSONArray bannerArray = jsonResponse.getJSONArray("data");
 
-        for (int i = 0; i < count; i++) {
-            dots[i] = new ImageView(getContext());
-            dots[i].setImageResource(R.drawable.dot_unselected);  // Initial state
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.setMargins(8, 0, 8, 0);  // Margins between dots
-            dotIndicatorLayout.addView(dots[i], params);
-        }
-
-        dots[0].setImageResource(R.drawable.dot_selected);  // Set the first dot as selected
-    }
-
-    // Update indikator titik sesuai halaman yang sedang ditampilkan
-    private void updateDotIndicator(int position) {
-        for (int i = 0; i < dots.length; i++) {
-            if (i == position) {
-                dots[i].setImageResource(R.drawable.dot_selected);
-            } else {
-                dots[i].setImageResource(R.drawable.dot_unselected);
+                                // Ambil maksimal 20 gambar dari array JSON
+                                for (int i = 0; i < bannerArray.length() && i < 10; i++) {
+                                    JSONObject bannerItem = bannerArray.getJSONObject(i);
+                                    if (bannerItem.has("url_banner")) {  // Validasi jika key ada
+                                        String bannerCover = bannerItem.getString("url_banner");
+                                        imageUrls.add(bannerCover); // Tambahkan URL gambar ke list
+                                    }
+                                }
+                                // Set adapter setelah mendapatkan data gambar
+                                bannerAdapter = new BannerAdapter(getContext(), imageUrls);
+                                recyclerView.setAdapter(bannerAdapter);
+                            } else {
+                                showError("Error: " + jsonResponse.getString("message"));
+                            }
+                        } catch (JSONException e) {
+                            showError("Parsing error: " + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showError("Request error: " + error.getMessage());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_email", "mihsanrahman19@gmail.com");  // Ganti dengan otentikasi aman
+                params.put("user_password", "ihsan111");               // Ganti dengan otentikasi aman
+                params.put("galery_device_id", "fae3876e39143557");
+                params.put("user_version", "proteksi");
+                params.put("id", "100"); // Sesuai permintaan
+                params.put("aksi", "ambilbanner_slider");
+                return params;
             }
-        }
+        };
+        Volley.newRequestQueue(getContext()).add(stringRequest);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (timer != null) {
-            timer.cancel();
-        }
+    // Method untuk menampilkan error
+    private void showError(String message) {
+        errorTextView.setText(message);
+        errorTextView.setVisibility(View.VISIBLE);
+    }
+
+    // Method untuk menampilkan gambar di ImageView (opsional jika diperlukan)
+    private void loadImage(String imageUrl) {
+        ImageRequest imageRequest = new ImageRequest(imageUrl,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        // Penggunaan respons gambar
+                    }
+                },
+                0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showError("Image load error: " + error.getMessage());
+                    }
+                });
+        Volley.newRequestQueue(getContext()).add(imageRequest);
     }
 }

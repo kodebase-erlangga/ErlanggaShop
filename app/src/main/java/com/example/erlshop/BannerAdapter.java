@@ -5,49 +5,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
-import androidx.viewpager.widget.PagerAdapter;
-
-import com.example.erlshop.R;
-
+import androidx.recyclerview.widget.RecyclerView;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 import java.util.List;
 
-public class BannerAdapter extends PagerAdapter {
+public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerViewHolder> {
 
     private Context context;
-    private List<Integer> bannerList;
-    private LayoutInflater layoutInflater;
+    private List<String> imageUrls;
+    private ImageLoader imageLoader;
 
-    public BannerAdapter(Context context, List<Integer> bannerList) {
+    public BannerAdapter(Context context, List<String> imageUrls) {
         this.context = context;
-        this.bannerList = bannerList;
-        layoutInflater = LayoutInflater.from(context);
-    }
-
-    @Override
-    public int getCount() {
-        return bannerList.size();
+        this.imageUrls = imageUrls;
+        this.imageLoader = new ImageLoader(Volley.newRequestQueue(context), new BitmapCache());
     }
 
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View view = layoutInflater.inflate(R.layout.banner_item, container, false);
-        ImageView bannerImage = view.findViewById(R.id.bannerImage);
-        bannerImage.setImageResource(bannerList.get(position));
-
-        container.addView(view);
-        return view;
+    public BannerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_banner, parent, false);
+        return new BannerViewHolder(view);
     }
 
     @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View) object);
+    public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
+        String imageUrl = imageUrls.get(position);
+        holder.imageView.setImageUrl(imageUrl, imageLoader); // Menampilkan gambar dari URL
     }
 
     @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view == object;
+    public int getItemCount() {
+        return imageUrls.size();
+    }
+
+    public static class BannerViewHolder extends RecyclerView.ViewHolder {
+        NetworkImageView imageView;
+
+        public BannerViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.imageViewBanner); // ID dari layout item
+        }
     }
 }
