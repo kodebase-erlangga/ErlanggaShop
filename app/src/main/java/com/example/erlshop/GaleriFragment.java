@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -41,7 +42,7 @@ public class GaleriFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
 
         // Menambahkan layout manager agar gambar-gambar ditampilkan dalam grid
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 kolom
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // 2 kolom
 
         // Memanggil method untuk mengambil gambar dari API
         fetchBanner();
