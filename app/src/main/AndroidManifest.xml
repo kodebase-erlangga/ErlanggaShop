@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme"
@@ -21,15 +22,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:exported="true" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="true" /> <!-- DetailActivity -->
-        <activity android:name=".DetailActivity" /> <!-- SignupActivity -->
+            android:exported="true" />
+
+        <activity android:name=".DetailActivity" />
+
         <activity
             android:name=".SignupActivity"
             android:exported="false" />
+
+        <!-- Menambahkan WebView Activities -->
+        <activity android:name=".WebViewActivity1"/>
+        <activity android:name=".WebViewActivity2"/>
+        <activity android:name=".WebViewActivity3"/>
+        <activity android:name=".WebViewActivity4"/>
+        <activity android:name=".WebViewActivity5"/>
+        <activity android:name=".WebViewActivity6"/>
+        <activity android:name=".WebViewActivity7"/>
+        <activity android:name=".WebViewActivity8"/>
+
     </application>
 </manifest>
