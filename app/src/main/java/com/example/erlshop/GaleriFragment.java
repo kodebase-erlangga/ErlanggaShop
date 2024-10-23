@@ -1,20 +1,16 @@
 package com.example.erlshop;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
@@ -29,7 +25,7 @@ public class GaleriFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private BannerAdapter bannerAdapter;
-    private List<String> imageUrls = new ArrayList<>(); // Menyimpan URL gambar dari API
+    private List<String> imageUrls = new ArrayList<>();
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private TextView errorTextView;
 
@@ -41,10 +37,10 @@ public class GaleriFragment extends Fragment {
         errorTextView = view.findViewById(R.id.errorTextView);
         recyclerView = view.findViewById(R.id.recyclerView);
 
-        // Menambahkan layout manager agar gambar-gambar ditampilkan dalam grid
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // 2 kolom
+        // Set layout manager for RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // or GridLayoutManager
 
-        // Memanggil method untuk mengambil gambar dari API
+        // Fetch data from API
         fetchBanner();
 
         return view;
@@ -61,16 +57,17 @@ public class GaleriFragment extends Fragment {
                             if (erlStatusId.equals("true")) {
                                 JSONArray bannerArray = jsonResponse.getJSONArray("data");
 
-                                // Ambil maksimal 20 gambar dari array JSON
+                                // Add up to 10 banner images
                                 for (int i = 0; i < bannerArray.length() && i < 10; i++) {
                                     JSONObject bannerItem = bannerArray.getJSONObject(i);
-                                    if (bannerItem.has("url_banner")) {  // Validasi jika key ada
+                                    if (bannerItem.has("url_banner")) {
                                         String bannerCover = bannerItem.getString("url_banner");
-                                        imageUrls.add(bannerCover); // Tambahkan URL gambar ke list
+                                        imageUrls.add(bannerCover);
                                     }
                                 }
-                                // Set adapter setelah mendapatkan data gambar
-                                bannerAdapter = new BannerAdapter(getContext(), imageUrls);
+
+                                // Initialize BannerAdapter with requireContext() to avoid NullPointerException
+                                bannerAdapter = new BannerAdapter(requireContext(), imageUrls);
                                 recyclerView.setAdapter(bannerAdapter);
                             } else {
                                 showError("Error: " + jsonResponse.getString("message"));
@@ -89,40 +86,21 @@ public class GaleriFragment extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user_email", "mihsanrahman19@gmail.com");  // Ganti dengan otentikasi aman
-                params.put("user_password", "ihsan111");               // Ganti dengan otentikasi aman
+                params.put("user_email", "mihsanrahman19@gmail.com");  // Replace with secure authentication
+                params.put("user_password", "ihsan111");               // Replace with secure authentication
                 params.put("galery_device_id", "fae3876e39143557");
                 params.put("user_version", "proteksi");
-                params.put("id", "100"); // Sesuai permintaan
+                params.put("id", "100");
                 params.put("aksi", "ambilbanner_slider");
                 return params;
             }
         };
-        Volley.newRequestQueue(getContext()).add(stringRequest);
+
+        Volley.newRequestQueue(requireContext()).add(stringRequest); // Use requireContext() to ensure non-null context
     }
 
-    // Method untuk menampilkan error
     private void showError(String message) {
         errorTextView.setText(message);
         errorTextView.setVisibility(View.VISIBLE);
-    }
-
-    // Method untuk menampilkan gambar di ImageView (opsional jika diperlukan)
-    private void loadImage(String imageUrl) {
-        ImageRequest imageRequest = new ImageRequest(imageUrl,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        // Penggunaan respons gambar
-                    }
-                },
-                0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        showError("Image load error: " + error.getMessage());
-                    }
-                });
-        Volley.newRequestQueue(getContext()).add(imageRequest);
     }
 }
