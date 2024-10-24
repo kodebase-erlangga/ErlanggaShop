@@ -25,7 +25,7 @@ public class GaleriFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private BannerAdapter bannerAdapter;
-    private List<String> imageUrls = new ArrayList<>();
+    private List<BannerItem> bannerItems = new ArrayList<>();  // Menggunakan BannerItem yang berisi gambar dan URL
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private TextView errorTextView;
 
@@ -57,17 +57,19 @@ public class GaleriFragment extends Fragment {
                             if (erlStatusId.equals("true")) {
                                 JSONArray bannerArray = jsonResponse.getJSONArray("data");
 
-                                // Add up to 10 banner images
+                                // Add up to 10 banner images and URLs
                                 for (int i = 0; i < bannerArray.length() && i < 10; i++) {
                                     JSONObject bannerItem = bannerArray.getJSONObject(i);
-                                    if (bannerItem.has("url_banner")) {
+                                    if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
                                         String bannerCover = bannerItem.getString("url_banner");
-                                        imageUrls.add(bannerCover);
+                                        String linkUrl = bannerItem.getString("url_produk");
+                                        String imageUrl = "https://e-library.erlanggaonline.co.id/upload/cover/" + bannerCover;
+                                        bannerItems.add(new BannerItem(imageUrl, linkUrl));
                                     }
                                 }
 
                                 // Initialize BannerAdapter with requireContext() to avoid NullPointerException
-                                bannerAdapter = new BannerAdapter(requireContext(), imageUrls);
+                                bannerAdapter = new BannerAdapter(requireContext(), bannerItems);
                                 recyclerView.setAdapter(bannerAdapter);
                             } else {
                                 showError("Error: " + jsonResponse.getString("message"));
