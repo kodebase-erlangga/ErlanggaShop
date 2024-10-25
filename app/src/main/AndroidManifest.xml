@@ -38,14 +38,9 @@
             android:exported="false" />
 
         <!-- Menambahkan WebView Activities -->
-        <activity android:name=".WebViewActivity1"/>
-        <activity android:name=".WebViewActivity2"/>
-        <activity android:name=".WebViewActivity3"/>
-        <activity android:name=".WebViewActivity4"/>
-        <activity android:name=".WebViewActivity5"/>
-        <activity android:name=".WebViewActivity6"/>
-        <activity android:name=".WebViewActivity7"/>
-        <activity android:name=".WebViewActivity8"/>
+        <activity android:name=".WebViewActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
 
     </application>
 </manifest>

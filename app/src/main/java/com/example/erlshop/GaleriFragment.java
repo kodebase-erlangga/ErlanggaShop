@@ -25,7 +25,7 @@ public class GaleriFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private BannerAdapter bannerAdapter;
-    private List<BannerItem> bannerItems = new ArrayList<>();  // Menggunakan BannerItem yang berisi gambar dan URL
+    private List<BannerItem> bannerItems = new ArrayList<>();  // List to hold banner items
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private TextView errorTextView;
 
@@ -34,6 +34,7 @@ public class GaleriFragment extends Fragment {
         // Inflate layout fragment
         View view = inflater.inflate(R.layout.fragment_galeri, container, false);
 
+        // Initialize views
         errorTextView = view.findViewById(R.id.errorTextView);
         recyclerView = view.findViewById(R.id.recyclerView);
 
@@ -63,14 +64,14 @@ public class GaleriFragment extends Fragment {
                                     if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
                                         String bannerCover = bannerItem.getString("url_banner");
                                         String linkUrl = bannerItem.getString("url_produk");
-                                        String imageUrl = bannerCover;
-                                        bannerItems.add(new BannerItem(imageUrl, linkUrl));
+                                        bannerItems.add(new BannerItem(bannerCover, linkUrl));
                                     }
                                 }
 
                                 // Initialize BannerAdapter with requireContext() to avoid NullPointerException
                                 bannerAdapter = new BannerAdapter(requireContext(), bannerItems);
                                 recyclerView.setAdapter(bannerAdapter);
+                                errorTextView.setVisibility(View.GONE); // Hide error message if successful
                             } else {
                                 showError("Error: " + jsonResponse.getString("message"));
                             }
@@ -98,11 +99,14 @@ public class GaleriFragment extends Fragment {
             }
         };
 
-        Volley.newRequestQueue(requireContext()).add(stringRequest); // Use requireContext() to ensure non-null context
+        // Use requireContext() to ensure non-null context
+        Volley.newRequestQueue(requireContext()).add(stringRequest);
     }
 
     private void showError(String message) {
-        errorTextView.setText(message);
-        errorTextView.setVisibility(View.VISIBLE);
+        if (errorTextView != null) { // Ensure errorTextView is not null
+            errorTextView.setText(message);
+            errorTextView.setVisibility(View.VISIBLE);
+        }
     }
 }

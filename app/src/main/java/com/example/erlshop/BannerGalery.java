@@ -1,16 +1,15 @@
 package com.example.erlshop;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,20 +20,19 @@ import java.util.Map;
 
 public class BannerGalery extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private BannerAdapter bannerAdapter;
-    private List<BannerItem> bannerItems = new ArrayList<>();  // Gunakan List<BannerItem>
+    private ViewPager2 viewPager;
+    private TabLayout tabIndicator;
+    private SliderAdapter sliderAdapter;
+    private List<BannerItem> bannerItems = new ArrayList<>();
     private static final String URL = "https://ebook.erlanggaonline.co.id";
-    private TextView errorTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_banner_galery);
+        setContentView(R.layout.activity_image_slider);
 
-        errorTextView = findViewById(R.id.errorTextView);
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        viewPager = findViewById(R.id.viewPager);
+        tabIndicator = findViewById(R.id.tabIndicator);
 
         // Fetch banner data
         fetchBanner();
@@ -51,39 +49,41 @@ public class BannerGalery extends AppCompatActivity {
                             if (erlStatusId.equals("true")) {
                                 JSONArray bannerArray = jsonResponse.getJSONArray("data");
 
-                                // Tambahkan data ke bannerItems sebagai BannerItem (berisi URL gambar dan URL link)
+                                // Add banner items
                                 for (int i = 0; i < bannerArray.length() && i < 10; i++) {
                                     JSONObject bannerItem = bannerArray.getJSONObject(i);
-                                    if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
-                                        String bannerCover = bannerItem.getString("url_banner");
-                                        String linkUrl = bannerItem.getString("url_produk");
-                                        String imageUrl = bannerCover;
-                                        bannerItems.add(new BannerItem(imageUrl, linkUrl));  // Buat objek BannerItem
+                                    if (bannerItem.has("url_banner")) {
+                                        String imageUrl = bannerItem.getString("url_banner");
+                                        bannerItems.add(new BannerItem(imageUrl, null));
                                     }
                                 }
 
-                                // Set adapter dengan List<BannerItem>
-                                bannerAdapter = new BannerAdapter(BannerGalery.this, bannerItems);
-                                recyclerView.setAdapter(bannerAdapter);
+                                // Set the adapter for ViewPager2
+                                sliderAdapter = new SliderAdapter(BannerGalery.this, bannerItems);
+                                viewPager.setAdapter(sliderAdapter);
+
+                                // Set TabLayout indicator with ViewPager2
+                                new TabLayoutMediator(tabIndicator, viewPager, (tab, position) -> {}).attach();
+
                             } else {
-                                showError("Error: " + jsonResponse.getString("message"));
+                                // Handle error
                             }
                         } catch (JSONException e) {
-                            showError("Parsing error: " + e.getMessage());
+                            // Handle JSON parsing error
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        showError("Request error: " + error.getMessage());
+                        // Handle error
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user_email", "mihsanrahman19@gmail.com");  // Sesuaikan dengan autentikasi yang benar
-                params.put("user_password", "ihsan111");               // Sesuaikan dengan autentikasi yang benar
+                params.put("user_email", "mihsanrahman19@gmail.com");
+                params.put("user_password", "ihsan111");
                 params.put("galery_device_id", "fae3876e39143557");
                 params.put("user_version", "proteksi");
                 params.put("id", "100");
@@ -93,10 +93,5 @@ public class BannerGalery extends AppCompatActivity {
         };
 
         Volley.newRequestQueue(this).add(stringRequest);
-    }
-
-    private void showError(String message) {
-        errorTextView.setText(message);
-        errorTextView.setVisibility(View.VISIBLE);
     }
 }

@@ -57,9 +57,10 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.squareup.picasso:picasso:2.71828")
-    implementation("com.github.bumptech.glide:glide:4.15.0") // Dependensi Glide
+    implementation("com.github.bumptech.glide:glide:4.15.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.google.android.material:material:1.8.0")
 
 }
