@@ -2,7 +2,6 @@ package com.example.erlshop;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,21 +34,15 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
     @Override
     public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
         BannerItem bannerItem = bannerItems.get(position);
-
-        // Load banner image
         holder.imageView.setImageUrl(bannerItem.getImageUrl(), imageLoader);
 
         // Set click listener to open URL in WebViewActivity
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String linkUrl = bannerItem.getLinkUrl();
-                if (linkUrl != null && !linkUrl.isEmpty()) {
-                    // Open WebViewActivity and pass the URL
-                    Intent intent = new Intent(context, WebViewActivity.class);
-                    intent.putExtra("URL", linkUrl);
-                    context.startActivity(intent);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            String linkUrl = bannerItem.getLinkUrl();
+            if (linkUrl != null && !linkUrl.isEmpty()) {
+                Intent intent = new Intent(context, WebViewActivity.class);
+                intent.putExtra("URL", linkUrl);
+                context.startActivity(intent);
             }
         });
     }

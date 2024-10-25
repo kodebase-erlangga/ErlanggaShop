@@ -1,6 +1,8 @@
 package com.example.erlshop;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import com.android.volley.Request;
@@ -22,9 +24,12 @@ public class BannerGalery extends AppCompatActivity {
 
     private ViewPager2 viewPager;
     private TabLayout tabIndicator;
-    private SliderAdapter sliderAdapter;
+    private BannerSliderAdapter bannerSliderAdapter;
     private List<BannerItem> bannerItems = new ArrayList<>();
     private static final String URL = "https://ebook.erlanggaonline.co.id";
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable runnable;
+    private final int SLIDE_INTERVAL = 3000; // Interval for sliding
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,6 @@ public class BannerGalery extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         tabIndicator = findViewById(R.id.tabIndicator);
 
-        // Fetch banner data
         fetchBanner();
     }
 
@@ -46,37 +50,38 @@ public class BannerGalery extends AppCompatActivity {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             String erlStatusId = jsonResponse.getString("erlStatusId");
-                            if (erlStatusId.equals("true")) {
+                            if ("true".equals(erlStatusId)) {
                                 JSONArray bannerArray = jsonResponse.getJSONArray("data");
 
                                 // Add banner items
                                 for (int i = 0; i < bannerArray.length() && i < 10; i++) {
                                     JSONObject bannerItem = bannerArray.getJSONObject(i);
-                                    if (bannerItem.has("url_banner")) {
+                                    if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
                                         String imageUrl = bannerItem.getString("url_banner");
-                                        bannerItems.add(new BannerItem(imageUrl, null));
+                                        String linkUrl = bannerItem.getString("url_produk");
+                                        bannerItems.add(new BannerItem(imageUrl, linkUrl));
                                     }
                                 }
 
                                 // Set the adapter for ViewPager2
-                                sliderAdapter = new SliderAdapter(BannerGalery.this, bannerItems);
-                                viewPager.setAdapter(sliderAdapter);
+                                bannerSliderAdapter = new BannerSliderAdapter(BannerGalery.this, bannerItems);
+                                viewPager.setAdapter(bannerSliderAdapter);
 
                                 // Set TabLayout indicator with ViewPager2
                                 new TabLayoutMediator(tabIndicator, viewPager, (tab, position) -> {}).attach();
 
-                            } else {
-                                // Handle error
+                                // Start automatic sliding
+                                startAutoSlide();
                             }
                         } catch (JSONException e) {
-                            // Handle JSON parsing error
+                            e.printStackTrace();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle error
+                        error.printStackTrace();
                     }
                 }) {
             @Override
@@ -92,6 +97,34 @@ public class BannerGalery extends AppCompatActivity {
             }
         };
 
+        // Add the request to the RequestQueue
         Volley.newRequestQueue(this).add(stringRequest);
+    }
+
+    private void startAutoSlide() {
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (viewPager.getCurrentItem() == bannerItems.size() - 1) {
+                    viewPager.setCurrentItem(0, true);
+                } else {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+                }
+                handler.postDelayed(this, SLIDE_INTERVAL);
+            }
+        };
+        handler.postDelayed(runnable, SLIDE_INTERVAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler.postDelayed(runnable, SLIDE_INTERVAL);
     }
 }
