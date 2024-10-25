@@ -63,7 +63,7 @@ public class GaleriFragment extends Fragment {
                                     if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
                                         String bannerCover = bannerItem.getString("url_banner");
                                         String linkUrl = bannerItem.getString("url_produk");
-                                        String imageUrl = "https://e-library.erlanggaonline.co.id/upload/cover/" + bannerCover;
+                                        String imageUrl = bannerCover;
                                         bannerItems.add(new BannerItem(imageUrl, linkUrl));
                                     }
                                 }
