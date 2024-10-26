@@ -85,7 +85,6 @@ public class HomeFragment extends Fragment {
     // Method untuk mengganti fragment yang ditampilkan
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -4,8 +4,8 @@
 
     <ImageView
         android:id="@+id/imageViewSlider"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="405dp"
+        android:layout_height="150dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"/>
 </FrameLayout>

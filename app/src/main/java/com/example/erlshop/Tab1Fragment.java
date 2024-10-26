@@ -37,7 +37,8 @@ public class Tab1Fragment extends Fragment {
             "Biologi Molekuler",
             "Manajemen Obesitas",
             "Asuhan Keperawatan Keluarga Dengan Pendekatan Studi Kasus",
-            "Bioteknologi Kesehatan"
+            "Bioteknologi Kesehatan", "Home Sweet Loan", "Beruang Pelamu Mau Pup!",
+            "Diga Si Naga Yang Apa Adanya", "Parable", "Power Ultimate Service Culture", "Manga"
     };
 
     @Nullable
