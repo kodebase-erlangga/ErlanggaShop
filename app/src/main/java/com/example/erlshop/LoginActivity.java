@@ -1,11 +1,12 @@
 package com.example.erlshop;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
-import com.example.erlshop.databinding.ActivityLoginBinding;
 import android.text.InputType;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import com.example.erlshop.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -15,6 +16,18 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Memeriksa apakah pengguna sudah login
+        SharedPreferences preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
+        if (isLoggedIn) {
+            // Jika pengguna sudah login, langsung buka MainActivity
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return; // Keluar dari onCreate
+        }
+
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -32,10 +45,15 @@ public class LoginActivity extends AppCompatActivity {
                 Boolean checkCredentials = databaseHelper.checkEmailPassword(email, password);
 
                 if (checkCredentials) {
+                    // Simpan status login di SharedPreferences
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("isLoggedIn", true);
+                    editor.apply();
+
                     Toast.makeText(LoginActivity.this, "Login Successfully!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
-                    finish();  // Close LoginActivity after successful login
+                    finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                 }
@@ -52,12 +70,12 @@ public class LoginActivity extends AppCompatActivity {
         binding.eyeIcon.setOnClickListener(view -> {
             if (binding.loginPassword.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
                 binding.loginPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                binding.eyeIcon.setImageResource(R.drawable.baseline_visibility_24); // Change to visible eye icon
+                binding.eyeIcon.setImageResource(R.drawable.baseline_visibility_24);
             } else {
                 binding.loginPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                binding.eyeIcon.setImageResource(R.drawable.baseline_visibility_off_24); // Change to hidden eye icon
+                binding.eyeIcon.setImageResource(R.drawable.baseline_visibility_off_24);
             }
-            binding.loginPassword.setSelection(binding.loginPassword.length()); // Move cursor to the end
+            binding.loginPassword.setSelection(binding.loginPassword.length());
         });
     }
 }

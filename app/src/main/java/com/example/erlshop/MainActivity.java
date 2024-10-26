@@ -6,7 +6,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager2.widget.ViewPager2;
 import android.graphics.drawable.ColorDrawable;
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,11 +16,11 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,12 +34,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Cek status login
+        SharedPreferences preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);  // Ambil status login
+
+        if (!isLoggedIn) {
+            // Jika belum login, arahkan ke LoginActivity
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();  // Tutup MainActivity agar tidak bisa diakses tanpa login
+            return; // Pastikan tidak melanjutkan eksekusi kode di bawah
+        }
+
         // Initialize views
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        viewPager2 = findViewById(R.id.viewPager2);  // ViewPager2 for the icon grid
 
         // Use Toolbar from androidx
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -118,13 +128,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here
-        int id = item.getItemId();
-
-        if (id == R.id.action_search) {
+        if (item.getItemId() == R.id.action_search) {
             Toast.makeText(this, "Search clicked", Toast.LENGTH_SHORT).show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -140,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "Logout menu item clicked");
         SharedPreferences preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
+        editor.clear();  // Hapus semua data di SharedPreferences
         editor.apply();
 
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
