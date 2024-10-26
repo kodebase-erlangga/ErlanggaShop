@@ -39,7 +39,7 @@ public class BannerGalery extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         tabIndicator = findViewById(R.id.tabIndicator);
 
-        fetchBanner();
+        fetchBanner(); // Memanggil metode untuk mengambil banner
     }
 
     private void fetchBanner() {
@@ -53,7 +53,7 @@ public class BannerGalery extends AppCompatActivity {
                             if ("true".equals(erlStatusId)) {
                                 JSONArray bannerArray = jsonResponse.getJSONArray("data");
 
-                                // Add banner items
+                                // Tambahkan banner items
                                 for (int i = 0; i < bannerArray.length() && i < 10; i++) {
                                     JSONObject bannerItem = bannerArray.getJSONObject(i);
                                     if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
@@ -68,7 +68,12 @@ public class BannerGalery extends AppCompatActivity {
                                 viewPager.setAdapter(bannerSliderAdapter);
 
                                 // Set TabLayout indicator with ViewPager2
-                                new TabLayoutMediator(tabIndicator, viewPager, (tab, position) -> {}).attach();
+                                new TabLayoutMediator(tabIndicator, viewPager, (tab, position) -> {
+                                    // Set content description for accessibility
+                                    String bannerDescription = "Banner " + (position + 1);
+                                    tab.setText(bannerDescription); // Optional, if you want to show text
+                                    tab.view.setContentDescription(bannerDescription); // Set content description for accessibility
+                                }).attach();
 
                                 // Start automatic sliding
                                 startAutoSlide();
@@ -97,34 +102,37 @@ public class BannerGalery extends AppCompatActivity {
             }
         };
 
-        // Add the request to the RequestQueue
+        // Tambahkan request ke RequestQueue
         Volley.newRequestQueue(this).add(stringRequest);
     }
+
 
     private void startAutoSlide() {
         runnable = new Runnable() {
             @Override
             public void run() {
+                // If we are at the last item, go back to the first item
                 if (viewPager.getCurrentItem() == bannerItems.size() - 1) {
                     viewPager.setCurrentItem(0, true);
                 } else {
+                    // Otherwise, go to the next item
                     viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
                 }
-                handler.postDelayed(this, SLIDE_INTERVAL);
+                handler.postDelayed(this, SLIDE_INTERVAL); // Set the next slide after the interval
             }
         };
-        handler.postDelayed(runnable, SLIDE_INTERVAL);
+        handler.postDelayed(runnable, SLIDE_INTERVAL); // Start the auto sliding
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(runnable);
+        handler.removeCallbacks(runnable); // Stop auto sliding when the activity is paused
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        handler.postDelayed(runnable, SLIDE_INTERVAL);
+        handler.postDelayed(runnable, SLIDE_INTERVAL); // Resume auto sliding when the activity is resumed
     }
 }

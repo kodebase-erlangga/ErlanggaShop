@@ -34,18 +34,22 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
     @Override
     public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
         BannerItem bannerItem = bannerItems.get(position);
-        holder.imageView.setImageUrl(bannerItem.getImageUrl(), imageLoader);
 
-        // Set click listener to open URL in WebViewActivity
+        // Correct the method to getBannerCover
+        holder.imageView.setImageUrl(bannerItem.getBannerCover(), imageLoader);
+
+        // Set click listener to open URL in WebViewActivity (if applicable)
         holder.itemView.setOnClickListener(v -> {
-            String linkUrl = bannerItem.getLinkUrl();
-            if (linkUrl != null && !linkUrl.isEmpty()) {
-                Intent intent = new Intent(context, WebViewActivity.class);
-                intent.putExtra("URL", linkUrl);
-                context.startActivity(intent);
+            String linkUrl = bannerItem.getLinkUrl(); // Mendapatkan URL yang terkait dengan banner
+            if (linkUrl != null && !linkUrl.isEmpty()) { // Memastikan URL tidak null atau kosong
+                Intent intent = new Intent(context, WebViewActivity.class); // Membuat intent untuk berpindah ke WebViewActivity
+                intent.putExtra("URL", linkUrl); // Mengirim URL ke WebViewActivity
+                context.startActivity(intent); // Memulai aktivitas
             }
         });
+
     }
+
 
     @Override
     public int getItemCount() {

@@ -6,8 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -23,8 +22,8 @@ import java.util.Map;
 
 public class GaleriFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private BannerSliderAdapter bannerAdapter;
+    private ViewPager2 viewPager;
+    private BannerSliderAdapter bannerSliderAdapter;
     private List<BannerItem> bannerItems = new ArrayList<>();
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private TextView errorTextView;
@@ -32,10 +31,14 @@ public class GaleriFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_galeri, container, false);
+
+        // Initialize views
         errorTextView = view.findViewById(R.id.errorTextView);
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        viewPager = view.findViewById(R.id.viewPager);
+
+        // Fetch data from API
         fetchBanner();
+
         return view;
     }
 
@@ -52,16 +55,15 @@ public class GaleriFragment extends Fragment {
 
                                 for (int i = 0; i < bannerArray.length() && i < 10; i++) {
                                     JSONObject bannerItem = bannerArray.getJSONObject(i);
-                                    if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
+                                    if (bannerItem.has("url_banner")) {
                                         String bannerCover = bannerItem.getString("url_banner");
                                         String linkUrl = bannerItem.getString("url_produk");
                                         bannerItems.add(new BannerItem(bannerCover, linkUrl));
                                     }
                                 }
 
-                                // Initialize BannerSliderAdapter
-                                bannerAdapter = new BannerSliderAdapter(requireContext(), bannerItems);
-                                recyclerView.setAdapter(bannerAdapter);
+                                bannerSliderAdapter = new BannerSliderAdapter(requireContext(), bannerItems);
+                                viewPager.setAdapter(bannerSliderAdapter);
                                 errorTextView.setVisibility(View.GONE);
                             } else {
                                 showError("Error: " + jsonResponse.getString("message"));
