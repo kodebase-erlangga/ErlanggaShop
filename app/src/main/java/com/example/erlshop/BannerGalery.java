@@ -29,7 +29,7 @@ public class BannerGalery extends AppCompatActivity {
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable;
-    private final int SLIDE_INTERVAL = 3000; // Interval for sliding
+    private final int SLIDE_INTERVAL = 1000; // Interval untuk sliding otomatis dalam milidetik
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +39,10 @@ public class BannerGalery extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         tabIndicator = findViewById(R.id.tabIndicator);
 
-        fetchBanner(); // Memanggil metode untuk mengambil banner
+        fetchBanner(); // Memanggil metode untuk mengambil banner dari server
     }
 
+    // Metode untuk mengambil data banner dari server
     private void fetchBanner() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                 new Response.Listener<String>() {
@@ -53,7 +54,7 @@ public class BannerGalery extends AppCompatActivity {
                             if ("true".equals(erlStatusId)) {
                                 JSONArray bannerArray = jsonResponse.getJSONArray("data");
 
-                                // Tambahkan banner items
+                                // Memproses setiap item dalam array banner
                                 for (int i = 0; i < bannerArray.length() && i < 10; i++) {
                                     JSONObject bannerItem = bannerArray.getJSONObject(i);
                                     if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
@@ -63,19 +64,18 @@ public class BannerGalery extends AppCompatActivity {
                                     }
                                 }
 
-                                // Set the adapter for ViewPager2
+                                // Menyiapkan adapter untuk ViewPager2
                                 bannerSliderAdapter = new BannerSliderAdapter(BannerGalery.this, bannerItems);
                                 viewPager.setAdapter(bannerSliderAdapter);
 
-                                // Set TabLayout indicator with ViewPager2
+                                // Menghubungkan TabLayout dengan ViewPager2
                                 new TabLayoutMediator(tabIndicator, viewPager, (tab, position) -> {
-                                    // Set content description for accessibility
                                     String bannerDescription = "Banner " + (position + 1);
-                                    tab.setText(bannerDescription); // Optional, if you want to show text
-                                    tab.view.setContentDescription(bannerDescription); // Set content description for accessibility
+                                    tab.setText(bannerDescription);
+                                    tab.view.setContentDescription(bannerDescription);
                                 }).attach();
 
-                                // Start automatic sliding
+                                // Memulai sliding otomatis
                                 startAutoSlide();
                             }
                         } catch (JSONException e) {
@@ -102,37 +102,38 @@ public class BannerGalery extends AppCompatActivity {
             }
         };
 
-        // Tambahkan request ke RequestQueue
+        // Menambahkan request ke RequestQueue Volley
         Volley.newRequestQueue(this).add(stringRequest);
     }
 
-
+    // Memulai fungsi sliding otomatis pada ViewPager2
     private void startAutoSlide() {
         runnable = new Runnable() {
             @Override
             public void run() {
-                // If we are at the last item, go back to the first item
+                // Mengecek apakah posisi saat ini adalah item terakhir
                 if (viewPager.getCurrentItem() == bannerItems.size() - 1) {
-                    viewPager.setCurrentItem(0, true);
+                    viewPager.setCurrentItem(0, true); // Kembali ke item pertama jika mencapai item terakhir
                 } else {
-                    // Otherwise, go to the next item
-                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true); // Pindah ke item berikutnya
                 }
-                handler.postDelayed(this, SLIDE_INTERVAL); // Set the next slide after the interval
+                handler.postDelayed(this, SLIDE_INTERVAL); // Mengatur slide berikutnya setelah interval
             }
         };
-        handler.postDelayed(runnable, SLIDE_INTERVAL); // Start the auto sliding
+        handler.postDelayed(runnable, SLIDE_INTERVAL); // Memulai sliding otomatis pertama kali
     }
 
+    // Menghentikan sliding otomatis saat activity dijeda (misal ketika pindah ke aplikasi lain)
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(runnable); // Stop auto sliding when the activity is paused
+        handler.removeCallbacks(runnable); // Menghentikan sliding otomatis
     }
 
+    // Melanjutkan sliding otomatis saat activity kembali ke layar
     @Override
     protected void onResume() {
         super.onResume();
-        handler.postDelayed(runnable, SLIDE_INTERVAL); // Resume auto sliding when the activity is resumed
+        handler.postDelayed(runnable, SLIDE_INTERVAL); // Melanjutkan sliding otomatis
     }
 }

@@ -6,7 +6,6 @@
     android:background="@drawable/gradient_background"
     android:orientation="vertical">
 
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
         android:layout_width="100dp"
@@ -16,11 +15,12 @@
         android:layout_marginTop="16dp"/>
 
     <TextView
+        android:id="@+id/profile_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:text="ihsan@gmail.com"/>
+        android:text="Email Placeholder"/>
 
     <TextView
         android:layout_width="wrap_content"

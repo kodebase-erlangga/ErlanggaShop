@@ -45,9 +45,10 @@ public class LoginActivity extends AppCompatActivity {
                 Boolean checkCredentials = databaseHelper.checkEmailPassword(email, password);
 
                 if (checkCredentials) {
-                    // Simpan status login di SharedPreferences
+                    // Simpan status login dan email pengguna di SharedPreferences
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("isLoggedIn", true);
+                    editor.putString("userEmail", email); // Simpan email pengguna
                     editor.apply();
 
                     Toast.makeText(LoginActivity.this, "Login Successfully!", Toast.LENGTH_SHORT).show();

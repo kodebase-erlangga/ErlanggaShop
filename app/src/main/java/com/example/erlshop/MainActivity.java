@@ -6,18 +6,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import android.graphics.drawable.ColorDrawable;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.app.Dialog;
+import android.view.Window;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager2.widget.ViewPager2;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -27,24 +27,25 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
-    ViewPager2 viewPager2;
+    TextView emailTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Cek status login
+        // Memeriksa apakah pengguna sudah login
         SharedPreferences preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);  // Ambil status login
-
+        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
         if (!isLoggedIn) {
             // Jika belum login, arahkan ke LoginActivity
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish();  // Tutup MainActivity agar tidak bisa diakses tanpa login
-            return; // Pastikan tidak melanjutkan eksekusi kode di bawah
+            finish();
+            return;
         }
+
+        String email = preferences.getString("userEmail", ""); // Ambil email pengguna dari SharedPreferences
 
         // Initialize views
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -52,17 +53,20 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
-        // Use Toolbar from androidx
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        // Set email di header NavigationView
+        View headerView = navigationView.getHeaderView(0);  // Mendapatkan header layout
+        emailTextView = headerView.findViewById(R.id.profile_email); // Sesuaikan ID dengan TextView di header_layout
+        emailTextView.setText(email);  // Tampilkan email di TextView header
 
         // Setup ActionBarDrawerToggle
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Set default fragment when activity is first launched
+        // Set default fragment
         if (savedInstanceState == null) {
             replaceFragment(new HomeFragment());
             navigationView.setCheckedItem(R.id.nav_home);
@@ -114,25 +118,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // FloatingActionButton to display a dialog
         fab.setOnClickListener(view -> showBottomDialog());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        // Inflate the menu; this adds items to the action bar if present
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here
-        if (item.getItemId() == R.id.action_search) {
-            Toast.makeText(this, "Search clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -142,12 +128,10 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    // Function to log out and go to the login activity
     private void logout() {
-        Log.d("MainActivity", "Logout menu item clicked");
         SharedPreferences preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();  // Hapus semua data di SharedPreferences
+        editor.clear();
         editor.apply();
 
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);

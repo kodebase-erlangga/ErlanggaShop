@@ -89,5 +89,4 @@
         app:menu="@menu/menu_item"
         app:itemIconTint="@color/lavender"
         app:itemTextColor="@color/lavender"/>
-
 </androidx.drawerlayout.widget.DrawerLayout>
