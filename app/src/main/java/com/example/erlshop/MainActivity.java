@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.Koleksi) {
                 replaceFragment(new KoleksiFragment());
                 return true;
-            } else if (itemId == R.id.Profile) {
-                replaceFragment(new ProfileFragment());
+            } else if (itemId == R.id.Disukai) {
+                replaceFragment(new DisukaiFragment());
                 return true;
             } else {
                 return false;
@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new HomeFragment());
                 drawerLayout.closeDrawers();
                 return true;
-            } else if (itemId == R.id.nav_settings) {
-                replaceFragment(new SettingsFragment());
+            } else if (itemId == R.id.nav_profile) {
+                replaceFragment(new ProfileFragment());
                 drawerLayout.closeDrawers();
                 return true;
             } else if (itemId == R.id.nav_about) {
