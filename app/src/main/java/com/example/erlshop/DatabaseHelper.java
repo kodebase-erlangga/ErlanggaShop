@@ -12,7 +12,6 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "SignLog.db";
     private static final int DATABASE_VERSION = 2;
-
     // Tabel dan kolom untuk tabel "users"
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "id";
@@ -21,8 +20,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_GENDER = "gender";
     private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_PASSWORD = "password";
-
-    // Tabel dan kolom untuk tabel "links"
     private static final String TABLE_LINKS = "links";
     private static final String COLUMN_LINK_ID = "id";
     private static final String COLUMN_URL_PRODUK = "url_produk";

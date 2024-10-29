@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DisukaiFragment extends Fragment {
@@ -43,6 +44,12 @@ public class DisukaiFragment extends Fragment {
 
     private void loadProductLinks() {
         productLinks = databaseHelper.getAllLinks(); // Ambil semua link dari SQLite
+
+        // Batasi ke 8 link
+        if (productLinks.size() > 8) {
+            productLinks = productLinks.subList(0, 8);
+        }
+
         disukaiAdapter = new DisukaiAdapter(productLinks); // Inisialisasi adapter
         recyclerViewDisukai.setAdapter(disukaiAdapter); // Set adapter ke RecyclerView
     }
