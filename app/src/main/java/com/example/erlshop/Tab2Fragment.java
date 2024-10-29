@@ -1,21 +1,15 @@
 package com.example.erlshop;
 
 import android.os.Bundle;
-import android.view.LayoutInflater; // Impor untuk LayoutInflater
-import android.view.View; // Impor untuk View
-import android.view.ViewGroup; // Impor untuk ViewGroup
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.tabs.TabLayout; // Impor untuk TabLayout
-import com.google.android.material.tabs.TabLayoutMediator; // Impor untuk TabLayoutMediator
-import androidx.viewpager2.widget.ViewPager2; // Impor untuk ViewPager2
-
 
 public class Tab2Fragment extends Fragment {
     private final int[] images = {
