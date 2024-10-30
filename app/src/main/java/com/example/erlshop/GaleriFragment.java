@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +33,7 @@ public class GaleriFragment extends Fragment {
     private List<BannerItem> bannerItems = new ArrayList<>();
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private TextView errorTextView;
+    private LinearLayout dotIndicator;
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable;
     private final int SLIDE_INTERVAL = 3000;
@@ -42,6 +45,7 @@ public class GaleriFragment extends Fragment {
         // Initialize views
         errorTextView = view.findViewById(R.id.errorTextView);
         viewPager = view.findViewById(R.id.viewPager);
+        dotIndicator = view.findViewById(R.id.dotIndicator);
 
         // Fetch data from API
         fetchBanner();
@@ -72,6 +76,9 @@ public class GaleriFragment extends Fragment {
                                 bannerSliderAdapter = new BannerSliderAdapter(requireContext(), bannerItems);
                                 viewPager.setAdapter(bannerSliderAdapter);
                                 errorTextView.setVisibility(View.GONE);
+
+                                // Set up dot indicators
+                                setupDotIndicators();
 
                                 // Set the ViewPager2 to allow looping
                                 viewPager.setClipToPadding(false);
@@ -109,6 +116,52 @@ public class GaleriFragment extends Fragment {
         };
 
         Volley.newRequestQueue(requireContext()).add(stringRequest);
+    }
+
+    private void setupDotIndicators() {
+        // Clear existing indicators
+        dotIndicator.removeAllViews();
+        for (int i = 0; i < bannerItems.size(); i++) {
+            View dot = new View(requireContext());
+            dot.setBackgroundResource(R.drawable.indicator_inactive); // Set the inactive dot drawable
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(8, 0, 8, 0); // Set margins between dots
+            dotIndicator.addView(dot, params);
+        }
+
+        // Set the first dot as active
+        updateDotIndicators(0);
+
+        // Add page change listener to update dots
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                updateDotIndicators(position);
+            }
+        });
+    }
+
+    private void updateDotIndicators(int position) {
+        for (int i = 0; i < dotIndicator.getChildCount(); i++) {
+            View dot = dotIndicator.getChildAt(i);
+            if (i == position) {
+                // Set the active dot drawable and size
+                dot.setBackgroundResource(R.drawable.indicator_active); // Set the active dot drawable
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dot.getLayoutParams();
+                params.width = (int) getResources().getDimension(R.dimen.dot_active_size); // Increase active dot size
+                params.height = (int) getResources().getDimension(R.dimen.dot_active_size);
+                dot.setLayoutParams(params);
+            } else {
+                // Set the inactive dot drawable and size
+                dot.setBackgroundResource(R.drawable.indicator_inactive); // Set the inactive dot drawable
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dot.getLayoutParams();
+                params.width = (int) getResources().getDimension(R.dimen.dot_inactive_size); // Set inactive dot size
+                params.height = (int) getResources().getDimension(R.dimen.dot_inactive_size);
+                dot.setLayoutParams(params);
+            }
+        }
     }
 
     private void startAutoSlide() {

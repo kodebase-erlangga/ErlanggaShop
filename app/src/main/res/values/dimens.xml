@@ -1,3 +1,5 @@
 <resources>
     <dimen name="spacing">5dp</dimen>
+    <dimen name="dot_active_size">12dp</dimen>   <!-- Active dot size -->
+    <dimen name="dot_inactive_size">8dp</dimen>   <!-- Inactive dot size -->
 </resources>
