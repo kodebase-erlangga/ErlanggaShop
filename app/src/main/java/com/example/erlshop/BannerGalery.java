@@ -24,7 +24,7 @@ public class BannerGalery extends AppCompatActivity {
 
     private ViewPager2 viewPager;
     private TabLayout tabIndicator;
-    private BannerSliderAdapter bannerSliderAdapter;
+//    private BannerSliderAdapter bannerSliderAdapter;
     private List<BannerItem> bannerItems = new ArrayList<>();
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -36,10 +36,10 @@ public class BannerGalery extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_slider);
 
-        viewPager = findViewById(R.id.viewPager);
-        tabIndicator = findViewById(R.id.tabIndicator);
+//        viewPager = findViewById(R.id.viewPager);
+//        tabIndicator = findViewById(R.id.tabIndicator);
 
-        fetchBanner(); // Memanggil metode untuk mengambil banner dari server
+//        fetchBanner(); // Memanggil metode untuk mengambil banner dari server
     }
 
     // Metode untuk mengambil data banner dari server
@@ -55,18 +55,18 @@ public class BannerGalery extends AppCompatActivity {
                                 JSONArray bannerArray = jsonResponse.getJSONArray("data");
 
                                 // Memproses setiap item dalam array banner
-                                for (int i = 0; i < bannerArray.length() && i < 10; i++) {
-                                    JSONObject bannerItem = bannerArray.getJSONObject(i);
-                                    if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
-                                        String imageUrl = bannerItem.getString("url_banner");
-                                        String linkUrl = bannerItem.getString("url_produk");
-                                        bannerItems.add(new BannerItem(imageUrl, linkUrl));
-                                    }
-                                }
+//                                for (int i = 0; i < bannerArray.length() && i < 10; i++) {
+//                                    JSONObject bannerItem = bannerArray.getJSONObject(i);
+//                                    if (bannerItem.has("url_banner") && bannerItem.has("url_produk")) {
+//                                        String imageUrl = bannerItem.getString("url_banner");
+//                                        String linkUrl = bannerItem.getString("url_produk");
+//                                        bannerItems.add(new BannerItem(imageUrl, linkUrl));
+//                                    }
+//                                }
 
-                                // Menyiapkan adapter untuk ViewPager2
-                                bannerSliderAdapter = new BannerSliderAdapter(BannerGalery.this, bannerItems);
-                                viewPager.setAdapter(bannerSliderAdapter);
+//                                // Menyiapkan adapter untuk ViewPager2
+//                                bannerSliderAdapter = new BannerSliderAdapter(BannerGalery.this, bannerItems);
+//                                viewPager.setAdapter(bannerSliderAdapter);
 
                                 // Menghubungkan TabLayout dengan ViewPager2
                                 new TabLayoutMediator(tabIndicator, viewPager, (tab, position) -> {
@@ -89,17 +89,17 @@ public class BannerGalery extends AppCompatActivity {
                         error.printStackTrace();
                     }
                 }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("user_email", "mihsanrahman19@gmail.com");
-                params.put("user_password", "ihsan111");
-                params.put("galery_device_id", "fae3876e39143557");
-                params.put("user_version", "proteksi");
-                params.put("id", "100");
-                params.put("aksi", "ambilbanner_slider");
-                return params;
-            }
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("user_email", "mihsanrahman19@gmail.com");
+//                params.put("user_password", "ihsan111");
+//                params.put("galery_device_id", "fae3876e39143557");
+//                params.put("user_version", "proteksi");
+//                params.put("id", "100");
+//                params.put("aksi", "ambilbanner_slider");
+//                return params;
+//            }
         };
 
         // Menambahkan request ke RequestQueue Volley
@@ -123,17 +123,17 @@ public class BannerGalery extends AppCompatActivity {
         handler.postDelayed(runnable, SLIDE_INTERVAL); // Memulai sliding otomatis pertama kali
     }
 
-    // Menghentikan sliding otomatis saat activity dijeda (misal ketika pindah ke aplikasi lain)
-    @Override
-    protected void onPause() {
-        super.onPause();
-        handler.removeCallbacks(runnable); // Menghentikan sliding otomatis
-    }
-
-    // Melanjutkan sliding otomatis saat activity kembali ke layar
-    @Override
-    protected void onResume() {
-        super.onResume();
-        handler.postDelayed(runnable, SLIDE_INTERVAL); // Melanjutkan sliding otomatis
-    }
+//    // Menghentikan sliding otomatis saat activity dijeda (misal ketika pindah ke aplikasi lain)
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        handler.removeCallbacks(runnable); // Menghentikan sliding otomatis
+//    }
+//
+//    // Melanjutkan sliding otomatis saat activity kembali ke layar
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        handler.postDelayed(runnable, SLIDE_INTERVAL); // Melanjutkan sliding otomatis
+//    }
 }

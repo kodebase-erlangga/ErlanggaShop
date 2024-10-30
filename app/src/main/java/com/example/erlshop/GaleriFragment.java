@@ -1,10 +1,14 @@
 package com.example.erlshop;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.android.volley.Request;
@@ -27,6 +31,9 @@ public class GaleriFragment extends Fragment {
     private List<BannerItem> bannerItems = new ArrayList<>();
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private TextView errorTextView;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable runnable;
+    private final int SLIDE_INTERVAL = 3000;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +72,15 @@ public class GaleriFragment extends Fragment {
                                 bannerSliderAdapter = new BannerSliderAdapter(requireContext(), bannerItems);
                                 viewPager.setAdapter(bannerSliderAdapter);
                                 errorTextView.setVisibility(View.GONE);
+
+                                // Set the ViewPager2 to allow looping
+                                viewPager.setClipToPadding(false);
+                                viewPager.setClipChildren(false);
+                                viewPager.setOffscreenPageLimit(3);
+                                viewPager.setPageTransformer(new LoopingPageTransformer());
+
+                                // Start auto slide after setting the adapter
+                                startAutoSlide();
                             } else {
                                 showError("Error: " + jsonResponse.getString("message"));
                             }
@@ -95,10 +111,54 @@ public class GaleriFragment extends Fragment {
         Volley.newRequestQueue(requireContext()).add(stringRequest);
     }
 
+    private void startAutoSlide() {
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (viewPager.getCurrentItem() == bannerItems.size() - 1) {
+                    viewPager.setCurrentItem(0, true);
+                } else {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+                }
+                handler.postDelayed(this, SLIDE_INTERVAL);
+            }
+        };
+        handler.postDelayed(runnable, SLIDE_INTERVAL);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable); // Stop auto slide
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Restart auto slide if banners are available
+        if (bannerItems.size() > 0) {
+            handler.postDelayed(runnable, SLIDE_INTERVAL);
+        }
+    }
+
     private void showError(String message) {
         if (errorTextView != null) {
             errorTextView.setText(message);
             errorTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    // Custom PageTransformer for looping effect
+    private class LoopingPageTransformer implements ViewPager2.PageTransformer {
+        @Override
+        public void transformPage(@NonNull View page, float position) {
+            if (position < -1) { // [-Infinity,-1)
+                page.setAlpha(0);
+            } else if (position <= 1) { // [-1,1]
+                page.setAlpha(1);
+            } else { // (1,+Infinity]
+                page.setAlpha(0);
+            }
         }
     }
 }
