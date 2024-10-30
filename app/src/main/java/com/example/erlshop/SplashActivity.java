@@ -20,6 +20,4 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }, 2000); // 2000 milidetik = 2 detik
     }
-
-
 }
