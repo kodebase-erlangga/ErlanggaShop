@@ -24,8 +24,8 @@
         <!-- ImageView for displaying book cover -->
         <ImageView
             android:id="@+id/detailImageView"
-            android:layout_width="180dp"
-            android:layout_height="300dp"
+            android:layout_width="400dp"
+            android:layout_height="640dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="65dp"
             android:contentDescription="Book Cover"
@@ -37,10 +37,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="370dp"
+            android:layout_marginTop="800dp"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="20sp"
+            android:textSize="35dp"
             android:textStyle="bold"
             android:text="Book Title" /> <!-- Dummy text added for clarity -->
 
@@ -49,15 +49,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="400dp"
+            android:layout_marginTop="850dp"
             android:text="Click count: 0"
             android:textColor="@android:color/darker_gray"
-            android:textSize="16sp" />
+            android:textSize="35dp" />
 
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="500dp"
             android:layout_gravity="bottom"
             android:layout_weight="1" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

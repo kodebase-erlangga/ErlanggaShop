@@ -9,9 +9,10 @@
     <!-- ViewPager2 for the image slider -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
-        android:layout_width="410dp"
-        android:layout_height="150dp"
-        android:layout_marginLeft="9dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginTop="65dp"
         android:layout_above="@+id/dotIndicator"/>
 
@@ -22,15 +23,15 @@
         android:layout_height="wrap_content"
         android:textColor="@android:color/holo_red_dark"
         android:visibility="gone"
-        android:layout_marginLeft="200dp"/>
+        android:layout_marginLeft="100dp"/>
 
     <LinearLayout
         android:id="@+id/dotIndicator"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:layout_marginLeft="155dp"
         android:padding="16dp" />
 </LinearLayout>

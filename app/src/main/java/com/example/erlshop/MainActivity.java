@@ -45,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+//        DisukaiFragment fragment = new DisukaiFragment();
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        transaction.replace(R.id.fragmentContainer, fragment);
+//        transaction.commit();
+
         String email = preferences.getString("userEmail", ""); // Ambil email pengguna dari SharedPreferences
 
         // Initialize views
@@ -97,16 +102,8 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_home) {
-                replaceFragment(new HomeFragment());
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (itemId == R.id.nav_profile) {
+            if (itemId == R.id.nav_profile) {
                 replaceFragment(new ProfileFragment());
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (itemId == R.id.nav_about) {
-                replaceFragment(new AboutUsFragment());
                 drawerLayout.closeDrawers();
                 return true;
             } else if (itemId == R.id.nav_logout) {
@@ -117,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
         fab.setOnClickListener(view -> showBottomDialog());
     }
 

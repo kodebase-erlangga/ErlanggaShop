@@ -39,9 +39,9 @@
         <!-- FrameLayout to hold fragments -->
         <FrameLayout
             android:id="@+id/frame_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <!-- Bottom App Bar -->
         <com.google.android.material.bottomappbar.BottomAppBar

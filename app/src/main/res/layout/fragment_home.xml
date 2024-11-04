@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/profileContainer"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="60dp"
+        android:orientation="vertical"/>
     <!-- HorizontalScrollView untuk menampung icon dalam bentuk horizontal -->
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"

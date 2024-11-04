@@ -1,5 +1,6 @@
 package com.example.erlshop;
 
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,8 +43,20 @@ public class KoleksiFragment extends Fragment {
         errorTextView = view.findViewById(R.id.errorTextView);
         recyclerView = view.findViewById(R.id.recyclerView);
 
+        // Mendapatkan orientasi layar
+        int orientation = getResources().getConfiguration().orientation;
+        int columnCount;
+
+        // Jika perangkat adalah tablet, atur kolom berdasarkan orientasi
+        if (getResources().getBoolean(R.bool.isTablet)) {
+            columnCount = (orientation == Configuration.ORIENTATION_PORTRAIT) ? 4 : 5;
+        } else {
+            // Untuk smartphone, default-nya 3 kolom
+            columnCount = 3;
+        }
+
         // Set RecyclerView untuk menggunakan GridLayoutManager dengan 3 kolom
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnCount));
 
         // Memanggil method untuk mengambil gambar dari API
         fetchGallery();

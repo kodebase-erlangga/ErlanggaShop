@@ -1,5 +1,6 @@
 package com.example.erlshop;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,8 +38,13 @@ public class Tab1Fragment extends Fragment {
             "Biologi Molekuler",
             "Manajemen Obesitas",
             "Asuhan Keperawatan Keluarga Dengan Pendekatan Studi Kasus",
-            "Bioteknologi Kesehatan", "Home Sweet Loan", "Beruang Pelamu Mau Pup!",
-            "Diga Si Naga Yang Apa Adanya", "Parable", "Power Ultimate Service Culture", "Manga"
+            "Bioteknologi Kesehatan",
+            "Home Sweet Loan",
+            "Beruang Pelamu Mau Pup!",
+            "Diga Si Naga Yang Apa Adanya",
+            "Parable",
+            "Power Ultimate Service Culture",
+            "Manga"
     };
 
     @Nullable
@@ -47,7 +53,20 @@ public class Tab1Fragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tab1, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3)); // 3 columns
+
+        // Mendapatkan orientasi layar
+        int orientation = getResources().getConfiguration().orientation;
+        int columnCount;
+
+        // Jika perangkat adalah tablet, atur kolom berdasarkan orientasi
+        if (getResources().getBoolean(R.bool.isTablet)) {
+            columnCount = (orientation == Configuration.ORIENTATION_PORTRAIT) ? 4 : 5;
+        } else {
+            // Untuk smartphone, default-nya 3 kolom
+            columnCount = 3;
+        }
+
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnCount));
         recyclerView.setAdapter(new ImageAdapter(getActivity(), images, judulBuku));
 
         return view;

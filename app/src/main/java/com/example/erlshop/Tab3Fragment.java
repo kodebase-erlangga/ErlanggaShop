@@ -1,5 +1,6 @@
 package com.example.erlshop;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater; // Impor untuk LayoutInflater
 import android.view.View; // Impor untuk View
@@ -33,11 +34,22 @@ public class Tab3Fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab3, container, false);
-
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3)); // 3 images per row
-        ImageAdapter adapter = new ImageAdapter(getActivity(), images, judulBuku);
-        recyclerView.setAdapter(adapter);
+
+        // Mendapatkan orientasi layar
+        int orientation = getResources().getConfiguration().orientation;
+        int columnCount;
+
+        // Jika perangkat adalah tablet, atur kolom berdasarkan orientasi
+        if (getResources().getBoolean(R.bool.isTablet)) {
+            columnCount = (orientation == Configuration.ORIENTATION_PORTRAIT) ? 4 : 5;
+        } else {
+            // Untuk smartphone, default-nya 3 kolom
+            columnCount = 3;
+        }
+
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnCount));
+        recyclerView.setAdapter(new ImageAdapter(getActivity(), images, judulBuku));
 
         return view;
     }

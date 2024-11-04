@@ -5,14 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "SignLog.db";
-    private static final int DATABASE_VERSION = 2;
-    // Tabel dan kolom untuk tabel "users"
+    private static final int DATABASE_VERSION = 3; // Incremented for new columns
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "id";
     private static final String COLUMN_NAME = "name";
@@ -20,6 +20,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_GENDER = "gender";
     private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_PASSWORD = "password";
+    private static final String COLUMN_DIVISION = "division";
+    private static final String COLUMN_PROFILE_PIC = "profile_pic";
     private static final String TABLE_LINKS = "links";
     private static final String COLUMN_LINK_ID = "id";
     private static final String COLUMN_URL_PRODUK = "url_produk";
@@ -30,7 +32,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Buat tabel "users"
         String CREATE_USERS_TABLE =
                 "CREATE TABLE " + TABLE_USERS + " (" +
                         COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -38,27 +39,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         COLUMN_NIP + " TEXT, " +
                         COLUMN_GENDER + " TEXT, " +
                         COLUMN_EMAIL + " TEXT UNIQUE, " +
-                        COLUMN_PASSWORD + " TEXT)";
+                        COLUMN_PASSWORD + " TEXT, " +
+                        COLUMN_DIVISION + " TEXT, " +
+                        COLUMN_PROFILE_PIC + " TEXT)";
         db.execSQL(CREATE_USERS_TABLE);
 
-        // Buat tabel "links"
         String CREATE_LINKS_TABLE =
                 "CREATE TABLE " + TABLE_LINKS + " (" +
                         COLUMN_LINK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        COLUMN_URL_PRODUK + " TEXT)";
+                        COLUMN_URL_PRODUK + " TEXT UNIQUE)"; // Ensure URL is unique
         db.execSQL(CREATE_LINKS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Hapus tabel jika ada versi baru, lalu buat tabel kembali
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LINKS);
         onCreate(db);
     }
 
-    // Fungsi untuk menyisipkan data pengguna ke tabel "users"
-    public boolean insertData(String name, String nip, String gender, String email, String password) {
+    public boolean insertData(String name, String nip, String gender, String email, String password, String division, String profilePicUri) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME, name);
@@ -66,10 +66,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_GENDER, gender);
         contentValues.put(COLUMN_EMAIL, email);
         contentValues.put(COLUMN_PASSWORD, password);
+        contentValues.put(COLUMN_DIVISION, division);
+        contentValues.put(COLUMN_PROFILE_PIC, profilePicUri);
 
         long result = db.insert(TABLE_USERS, null, contentValues);
         db.close();
         return result != -1;
+    }
+
+    public Cursor getUserById(String userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(TABLE_USERS, null, COLUMN_USER_ID + " = ?", new String[]{userId}, null, null, null);
     }
 
     // Fungsi untuk memeriksa apakah email sudah terdaftar
@@ -92,16 +99,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
-    // Fungsi untuk menyisipkan link URL produk ke tabel "links"
     public void insertLink(String url_produk) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_URL_PRODUK, url_produk);
-        db.insert(TABLE_LINKS, null, values);
-        db.close();
+        if (!doesUrlExist(url_produk)) { // Check if URL already exists before inserting
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_URL_PRODUK, url_produk);
+            long result = db.insert(TABLE_LINKS, null, values);
+            db.close();
+            if (result == -1) {
+                Log.d("DatabaseHelper", "Failed to insert URL: " + url_produk); // Log jika gagal menyimpan
+            } else {
+                Log.d("DatabaseHelper", "Inserted URL: " + url_produk); // Log jika berhasil menyimpan
+            }
+        } else {
+            Log.d("DatabaseHelper", "URL already exists: " + url_produk); // Log jika URL sudah ada
+        }
     }
 
-    // Fungsi untuk mengambil semua link dari tabel "links"
+    // Fetch all links from the database
     public List<String> getAllLinks() {
         List<String> links = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -111,11 +126,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 String url = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_URL_PRODUK));
                 links.add(url);
+                Log.d("DatabaseHelper", "Retrieved URL: " + url); // Log setiap URL yang diambil
             } while (cursor.moveToNext());
+        } else {
+            Log.d("DatabaseHelper", "No URLs found in database."); // Log jika tidak ada URL ditemukan
         }
 
         cursor.close();
         db.close();
         return links;
+    }
+
+    // Function to check if a URL already exists in the links table
+    public boolean doesUrlExist(String url_produk) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_LINKS + " WHERE " + COLUMN_URL_PRODUK + " = ?", new String[]{url_produk});
+        boolean exists = cursor.getCount() > 0; // Check if cursor has any results
+        cursor.close();
+        db.close();
+        return exists;
     }
 }

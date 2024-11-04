@@ -1,6 +1,5 @@
 <resources>
     <array name="gender_array">
-        <item>Pilih Gender</item>
         <item>Pria</item>
         <item>Wanita</item>
         <item>Boeing 737</item>

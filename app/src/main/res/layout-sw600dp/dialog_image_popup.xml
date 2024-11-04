@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/largeImageView"
-        android:layout_width="290dp"
-        android:layout_height="408dp"
+        android:layout_width="490dp"
+        android:layout_height="608dp"
         android:scaleType="fitCenter"/>
 </LinearLayout>

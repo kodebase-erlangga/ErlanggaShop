@@ -205,11 +205,11 @@ public class GaleriFragment extends Fragment {
     private class LoopingPageTransformer implements ViewPager2.PageTransformer {
         @Override
         public void transformPage(@NonNull View page, float position) {
-            if (position < -1) { // [-Infinity,-1)
+            if (position < -1) {
                 page.setAlpha(0);
-            } else if (position <= 1) { // [-1,1]
+            } else if (position <= 1) {
                 page.setAlpha(1);
-            } else { // (1,+Infinity]
+            } else {
                 page.setAlpha(0);
             }
         }
