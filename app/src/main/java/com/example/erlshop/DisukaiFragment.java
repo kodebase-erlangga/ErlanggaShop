@@ -1,27 +1,21 @@
 package com.example.erlshop;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,12 +56,12 @@ public class DisukaiFragment extends Fragment {
 
                             if (erlStatusId.equals("true")) {
                                 JSONArray linksArray = jsonResponse.getJSONArray("data");
-                                linkList.clear(); // Clear the list before adding new items
                                 for (int i = 0; i < linksArray.length(); i++) {
-                                    String linkUrl = linksArray.getString(i); // Get the URL directly from linksArray
-                                    linkList.add(linkUrl); // Add the link URL to the list
+                                    JSONObject linkItem = linksArray.getJSONObject(i);
+                                    String linkUrl = linkItem.getString("url_produk"); // Extracting url_produk
+                                    linkList.add(linkUrl); // Adding the link to the list
                                 }
-                                displayLinks();
+                                displayLinks(); // Display the URLs in the RecyclerView
                             } else {
                                 showError("Error: " + jsonResponse.getString("message"));
                             }
@@ -101,7 +95,7 @@ public class DisukaiFragment extends Fragment {
     private void displayLinks() {
         linksAdapter = new LinksAdapter(linkList);
         recyclerView.setAdapter(linksAdapter);
-        errorTextView.setVisibility(View.GONE);
+        errorTextView.setVisibility(View.GONE); // Hide error message if links are successfully displayed
     }
 
     private void showError(String message) {
