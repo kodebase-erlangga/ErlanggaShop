@@ -24,16 +24,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 public class KoleksiFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private ImageView bookCoverImageView;
+    private RecyclerView shimmerRecyclerView;
+    private TextView errorTextView;
+    private ShimmerFrameLayout shimmerLayout;
+    private ShimmerAdapterKoleksi shimmerAdapter;
     private ImageAdapterKoleksi imageAdapterKoleksi;
-    private List<String> imageUrls = new ArrayList<>(); // Menyimpan URL gambar dari API
+    private List<String> imageUrls = new ArrayList<>();
 
     private static final String URL = "https://ebook.erlanggaonline.co.id/";
-    private TextView errorTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,23 +45,20 @@ public class KoleksiFragment extends Fragment {
 
         errorTextView = view.findViewById(R.id.errorTextView);
         recyclerView = view.findViewById(R.id.recyclerView);
+        shimmerRecyclerView = view.findViewById(R.id.shimmerRecyclerView);
+        shimmerLayout = view.findViewById(R.id.shimmerLayout);
 
-        // Mendapatkan orientasi layar
         int orientation = getResources().getConfiguration().orientation;
-        int columnCount;
+        int columnCount = getResources().getBoolean(R.bool.isTablet) ?
+                (orientation == Configuration.ORIENTATION_PORTRAIT ? 4 : 5) : 3;
 
-        // Jika perangkat adalah tablet, atur kolom berdasarkan orientasi
-        if (getResources().getBoolean(R.bool.isTablet)) {
-            columnCount = (orientation == Configuration.ORIENTATION_PORTRAIT) ? 4 : 5;
-        } else {
-            // Untuk smartphone, default-nya 3 kolom
-            columnCount = 3;
-        }
-
-        // Set RecyclerView untuk menggunakan GridLayoutManager dengan 3 kolom
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnCount));
+        shimmerRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnCount));
 
-        // Memanggil method untuk mengambil gambar dari API
+        shimmerAdapter = new ShimmerAdapterKoleksi();
+        shimmerRecyclerView.setAdapter(shimmerAdapter);
+        shimmerLayout.startShimmer();
+
         fetchGallery();
 
         return view;
@@ -69,21 +69,20 @@ public class KoleksiFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        shimmerLayout.stopShimmer();
+                        shimmerLayout.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             String erlStatusId = jsonResponse.getString("erlStatusId");
                             if (erlStatusId.equals("true")) {
                                 JSONArray gallery = jsonResponse.getJSONArray("data");
-
-                                // Ambil maksimal 20 gambar dari array JSON
                                 for (int i = 0; i < gallery.length() && i < 20; i++) {
                                     JSONObject book = gallery.getJSONObject(i);
                                     String galeryCover = book.getString("galery_cover");
                                     String imageUrl = "https://e-library.erlanggaonline.co.id/upload/cover/" + galeryCover;
-                                    imageUrls.add(imageUrl); // Tambahkan URL gambar ke list
+                                    imageUrls.add(imageUrl);
                                 }
-
-                                // Set adapter setelah mendapatkan data gambar
                                 imageAdapterKoleksi = new ImageAdapterKoleksi(getContext(), imageUrls);
                                 recyclerView.setAdapter(imageAdapterKoleksi);
                             } else {
@@ -97,6 +96,9 @@ public class KoleksiFragment extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        shimmerLayout.stopShimmer();
+                        shimmerLayout.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.GONE);
                         showError("Request error: " + error.getMessage());
                     }
                 }) {
@@ -118,28 +120,8 @@ public class KoleksiFragment extends Fragment {
         Volley.newRequestQueue(getContext()).add(stringRequest);
     }
 
-    // Method untuk menampilkan error
     private void showError(String message) {
         errorTextView.setText(message);
         errorTextView.setVisibility(View.VISIBLE);
-    }
-
-    // Method untuk menampilkan gambar di ImageView (opsional jika diperlukan)
-    private void loadImage(String imageUrl) {
-        ImageRequest imageRequest = new ImageRequest(imageUrl,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        bookCoverImageView.setImageBitmap(response);
-                    }
-                },
-                0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        showError("Image load error: " + error.getMessage());
-                    }
-                });
-        Volley.newRequestQueue(getContext()).add(imageRequest);
     }
 }
