@@ -9,4 +9,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="lavender">#8692f7</color>
     <color name="black_transparent">#80000000</color>
+    <color name="white_transparent_50">#80FFFFFF</color>
+    <color name="white_transparent_25">#40FFFFFF</color>
+    <color name="white_transparent_75">#BFFFFFFF</color>
+    <color name="white_transparent_10">#1AFFFFFF</color>
+    <color name="white_transparent_0">#00FFFFFF</color>
+    <color name="white_transparent_90">#1AFFFFFF</color> <!-- 90% transparent (10% visible) -->
+    <color name="white_transparent_99">#03FFFFFF</color> <!-- 99% transparent (1% visible) -->
 </resources>

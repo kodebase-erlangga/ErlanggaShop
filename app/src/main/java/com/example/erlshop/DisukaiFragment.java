@@ -39,11 +39,24 @@ public class DisukaiFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Fetch links from API
+        // Fetch links from the database to display
+        fetchLinksFromDatabase();
         fetchLinks();
 
         return view;
     }
+
+
+    private void fetchLinksFromDatabase() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
+        linkList.clear();
+
+        List<String> savedLinks = databaseHelper.getAllLinks();
+        linkList.addAll(savedLinks);
+
+        displayLinks();
+    }
+
 
     private void fetchLinks() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
@@ -56,10 +69,18 @@ public class DisukaiFragment extends Fragment {
 
                             if (erlStatusId.equals("true")) {
                                 JSONArray linksArray = jsonResponse.getJSONArray("data");
+                                DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
+
+                                // Clear previous links from database before adding new ones
+                                databaseHelper.clearLinks();
+
                                 for (int i = 0; i < linksArray.length(); i++) {
                                     JSONObject linkItem = linksArray.getJSONObject(i);
-                                    String linkUrl = linkItem.getString("url_produk"); // Extracting url_produk
-                                    linkList.add(linkUrl); // Adding the link to the list
+                                    String linkUrl = linkItem.getString("url_produk");
+                                    linkList.add(linkUrl);
+
+                                    // Save link to database
+                                    databaseHelper.addLink(linkUrl);
                                 }
                                 displayLinks(); // Display the URLs in the RecyclerView
                             } else {
@@ -95,7 +116,7 @@ public class DisukaiFragment extends Fragment {
     private void displayLinks() {
         linksAdapter = new LinksAdapter(linkList);
         recyclerView.setAdapter(linksAdapter);
-        errorTextView.setVisibility(View.GONE); // Hide error message if links are successfully displayed
+        errorTextView.setVisibility(View.GONE);
     }
 
     private void showError(String message) {

@@ -23,7 +23,7 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.detailToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Detail Buku"); // Set title for the App Bar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Show back button
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Show back button
 
         ImageView detailImage = findViewById(R.id.detailImageView);
         TextView bookTitleTextView = findViewById(R.id.bookTitleTextView);

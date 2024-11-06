@@ -9,8 +9,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.view.Window;
@@ -23,7 +21,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.app.Dialog;
 
 public class MainActivity extends AppCompatActivity {
-
     FloatingActionButton fab;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
@@ -45,16 +42,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-//        DisukaiFragment fragment = new DisukaiFragment();
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragmentContainer, fragment);
-//        transaction.commit();
-
         String email = preferences.getString("userEmail", ""); // Ambil email pengguna dari SharedPreferences
 
         // Initialize views
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        fab = findViewById(R.id.fab);
+//        fab = findViewById(R.id.fab);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -63,13 +55,13 @@ public class MainActivity extends AppCompatActivity {
         emailTextView = headerView.findViewById(R.id.profile_email); // Sesuaikan ID dengan TextView di header_layout
         emailTextView.setText(email);  // Tampilkan email di TextView header
 
-        // Setup ActionBarDrawerToggle
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+//        // Setup ActionBarDrawerToggle
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
+//        drawerLayout.addDrawerListener(toggle);
+//        toggle.syncState();
 
         // Set default fragment
         if (savedInstanceState == null) {
@@ -114,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        fab.setOnClickListener(view -> showBottomDialog());
+//        fab.setOnClickListener(view -> showBottomDialog());
     }
 
     private void replaceFragment(Fragment fragment) {

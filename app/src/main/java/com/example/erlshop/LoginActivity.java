@@ -7,6 +7,8 @@ import android.text.InputType;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.erlshop.databinding.ActivityLoginBinding;
+import android.database.Cursor;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,13 +44,21 @@ public class LoginActivity extends AppCompatActivity {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(LoginActivity.this, "All fields are mandatory", Toast.LENGTH_SHORT).show();
             } else {
-                Boolean checkCredentials = databaseHelper.checkEmailPassword(email, password);
+                Cursor cursor = databaseHelper.getUserByEmailAndPassword(email, password);
 
-                if (checkCredentials) {
-                    // Simpan status login dan email pengguna di SharedPreferences
+                if (cursor != null && cursor.moveToFirst()) {
+                    // Retrieve user details
+                    String name = cursor.getString(cursor.getColumnIndex("name"));
+                    String division = cursor.getString(cursor.getColumnIndex("division"));
+                    String profileImageUri = cursor.getString(cursor.getColumnIndex("profile_pic"));
+
+                    // Save login status and user details in SharedPreferences
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("isLoggedIn", true);
-                    editor.putString("userEmail", email); // Simpan email pengguna
+                    editor.putString("userEmail", email);
+                    editor.putString("userName", name);
+                    editor.putString("userDivision", division);
+                    editor.putString("userProfilePic", profileImageUri);
                     editor.apply();
 
                     Toast.makeText(LoginActivity.this, "Login Successfully!", Toast.LENGTH_SHORT).show();
@@ -60,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         // Redirect to Signup Activity
         binding.signupRedirectText.setOnClickListener(view -> {

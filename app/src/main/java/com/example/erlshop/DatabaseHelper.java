@@ -99,23 +99,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
-    public void insertLink(String url_produk) {
-        if (!doesUrlExist(url_produk)) { // Check if URL already exists before inserting
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(COLUMN_URL_PRODUK, url_produk);
-            long result = db.insert(TABLE_LINKS, null, values);
-            db.close();
-            if (result == -1) {
-                Log.d("DatabaseHelper", "Failed to insert URL: " + url_produk); // Log jika gagal menyimpan
-            } else {
-                Log.d("DatabaseHelper", "Inserted URL: " + url_produk); // Log jika berhasil menyimpan
-            }
-        } else {
-            Log.d("DatabaseHelper", "URL already exists: " + url_produk); // Log jika URL sudah ada
-        }
-    }
-
     // Fetch all links from the database
     public List<String> getAllLinks() {
         List<String> links = new ArrayList<>();
@@ -126,16 +109,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 String url = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_URL_PRODUK));
                 links.add(url);
-                Log.d("DatabaseHelper", "Retrieved URL: " + url); // Log setiap URL yang diambil
+                Log.d("DatabaseHelper", "Retrieved URL: " + url);
             } while (cursor.moveToNext());
         } else {
-            Log.d("DatabaseHelper", "No URLs found in database."); // Log jika tidak ada URL ditemukan
+            Log.d("DatabaseHelper", "No URLs found in database.");
         }
 
         cursor.close();
         db.close();
         return links;
     }
+
+
+    public void addLink(String link) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_URL_PRODUK, link); // Correct column reference
+        db.insert(TABLE_LINKS, null, values); // Insert into the correct table
+        db.close();
+    }
+
+    public void clearLinks() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_LINKS); // Use the correct table name
+        db.close();
+    }
+    // Inside DatabaseHelper class
+    public Cursor getUserByEmailAndPassword(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM users WHERE email = ? AND password = ?", new String[]{email, password});
+    }
+
+
+
 
     // Function to check if a URL already exists in the links table
     public boolean doesUrlExist(String url_produk) {

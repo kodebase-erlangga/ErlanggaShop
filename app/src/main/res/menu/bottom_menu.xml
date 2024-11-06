@@ -12,13 +12,11 @@
         android:title="Galeri"
         android:icon="@drawable/baseline_art_track_24"/>
 
-    <item
-        android:title=""/>
 
     <item
         android:id="@+id/Koleksi"
         android:title="Koleksi"
-        android:icon="@drawable/baseline_video_library_24" />
+        android:icon="@drawable/baseline_video_library_24"/>
 
     <item
         android:id="@+id/Disukai"

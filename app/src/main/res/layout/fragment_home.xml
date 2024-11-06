@@ -5,18 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/profileContainer"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="60dp"
-        android:orientation="vertical"/>
+    <include layout="@layout/user_profile_card" />
+
     <!-- HorizontalScrollView untuk menampung icon dalam bentuk horizontal -->
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="6dp">
 
         <!-- LinearLayout untuk menampung semua icon -->
         <LinearLayout
@@ -263,4 +259,6 @@
         android:layout_width="match_parent"
         android:layout_height="640dp"
         android:layout_marginBottom="600dp" />
+
+
 </LinearLayout>
