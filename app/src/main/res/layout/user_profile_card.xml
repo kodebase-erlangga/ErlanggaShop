@@ -13,6 +13,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:background="@color/white"
+        android:outlineAmbientShadowColor="@color/black"
         android:padding="16dp">
 
         <ImageView

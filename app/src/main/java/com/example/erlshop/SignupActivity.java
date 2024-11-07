@@ -25,10 +25,6 @@ public class SignupActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.gender_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.signupGender.setAdapter(adapter);
-
         binding.selectProfilePicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -37,6 +33,11 @@ public class SignupActivity extends AppCompatActivity {
                 startActivityForResult(intent, PICK_IMAGE_REQUEST);
             }
         });
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_array, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item); // Set layout untuk dropdown item
+        binding.signupGender.setAdapter(adapter);
 
         binding.signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +82,8 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

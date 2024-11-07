@@ -12,7 +12,6 @@
         android:title="Galeri"
         android:icon="@drawable/baseline_art_track_24"/>
 
-
     <item
         android:id="@+id/Koleksi"
         android:title="Koleksi"
