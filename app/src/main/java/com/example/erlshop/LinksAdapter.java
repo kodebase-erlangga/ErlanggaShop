@@ -1,5 +1,6 @@
 package com.example.erlshop;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
     public void onBindViewHolder(@NonNull LinkViewHolder holder, int position) {
         String link = linkList.get(position);
         holder.textView.setText(link); // Display the URL
+        holder.textView.setTextColor(Color.parseColor("#FF000000"));
     }
 
     @Override
@@ -35,7 +37,6 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
 
     public static class LinkViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
-
         public LinkViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(android.R.id.text1); // Using built-in layout for simple text display

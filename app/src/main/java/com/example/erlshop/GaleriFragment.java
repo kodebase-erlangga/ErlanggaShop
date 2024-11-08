@@ -150,25 +150,29 @@ public class GaleriFragment extends Fragment {
     }
 
     private void updateDotIndicators(int position) {
-        for (int i = 0; i < dotIndicator.getChildCount(); i++) {
-            View dot = dotIndicator.getChildAt(i);
-            if (i == position) {
-                // Set the active dot drawable and size
-                dot.setBackgroundResource(R.drawable.indicator_active); // Set the active dot drawable
+        // Memastikan fragment terhubung ke activity sebelum mengakses getResources()
+        if (isAdded()) {
+            for (int i = 0; i < dotIndicator.getChildCount(); i++) {
+                View dot = dotIndicator.getChildAt(i);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dot.getLayoutParams();
-                params.width = (int) getResources().getDimension(R.dimen.dot_active_size); // Increase active dot size
-                params.height = (int) getResources().getDimension(R.dimen.dot_active_size);
-                dot.setLayoutParams(params);
-            } else {
-                // Set the inactive dot drawable and size
-                dot.setBackgroundResource(R.drawable.indicator_inactive); // Set the inactive dot drawable
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dot.getLayoutParams();
-                params.width = (int) getResources().getDimension(R.dimen.dot_inactive_size); // Set inactive dot size
-                params.height = (int) getResources().getDimension(R.dimen.dot_inactive_size);
+
+                if (i == position) {
+                    // Mengatur drawable dan ukuran untuk titik aktif
+                    dot.setBackgroundResource(R.drawable.indicator_active); // Drawable untuk titik aktif
+                    params.width = (int) getResources().getDimension(R.dimen.dot_active_size); // Ukuran titik aktif
+                    params.height = (int) getResources().getDimension(R.dimen.dot_active_size);
+                } else {
+                    // Mengatur drawable dan ukuran untuk titik tidak aktif
+                    dot.setBackgroundResource(R.drawable.indicator_inactive); // Drawable untuk titik tidak aktif
+                    params.width = (int) getResources().getDimension(R.dimen.dot_inactive_size); // Ukuran titik tidak aktif
+                    params.height = (int) getResources().getDimension(R.dimen.dot_inactive_size);
+                }
+
                 dot.setLayoutParams(params);
             }
         }
     }
+
 
     private void startAutoSlide() {
         runnable = new Runnable() {
@@ -221,7 +225,6 @@ public class GaleriFragment extends Fragment {
         viewPager.setVisibility(View.GONE);
         dotIndicator.setVisibility(View.GONE);
     }
-
     private void setupViewPager() {
         viewPager.setClipToPadding(false);
         viewPager.setClipChildren(false);

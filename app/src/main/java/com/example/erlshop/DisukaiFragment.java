@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DisukaiFragment extends Fragment {
-
     private RecyclerView recyclerView;
     private LinksAdapter linksAdapter;
     private TextView errorTextView;
@@ -46,7 +45,6 @@ public class DisukaiFragment extends Fragment {
         return view;
     }
 
-
     private void fetchLinksFromDatabase() {
         DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
         linkList.clear();
@@ -56,7 +54,6 @@ public class DisukaiFragment extends Fragment {
 
         displayLinks();
     }
-
 
     private void fetchLinks() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
@@ -116,13 +113,14 @@ public class DisukaiFragment extends Fragment {
     private void displayLinks() {
         linksAdapter = new LinksAdapter(linkList);
         recyclerView.setAdapter(linksAdapter);
-        errorTextView.setVisibility(View.GONE);
+//        errorTextView.setVisibility(View.GONE);
     }
 
     private void showError(String message) {
         if (errorTextView != null) {
             errorTextView.setText(message);
             errorTextView.setVisibility(View.VISIBLE);
+            errorTextView.setTextColor(getResources().getColor(R.color.black, null));
         }
     }
 }
