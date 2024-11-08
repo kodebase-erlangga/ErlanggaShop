@@ -2,10 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical">
+
+    <!-- ShimmerFrameLayout for loading effect -->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginRight="9dp"
+        android:layout_marginTop="60dp"
+        android:visibility="visible"
+        app:shimmer_auto_start="true">
+
+        <!-- Placeholder content inside ShimmerFrameLayout -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/shimmer_placeholder" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <!-- ViewPager2 for the image slider -->
     <androidx.viewpager2.widget.ViewPager2
@@ -15,7 +33,7 @@
         android:layout_marginLeft="9dp"
         android:layout_marginRight="9dp"
         android:layout_marginTop="60dp"
-        android:layout_above="@+id/dotIndicator"/>
+        android:visibility="gone"/>
 
     <!-- TextView for displaying error messages -->
     <TextView
@@ -24,8 +42,9 @@
         android:layout_height="wrap_content"
         android:textColor="@android:color/holo_red_dark"
         android:visibility="gone"
-        android:layout_marginLeft="200dp"/>
+        android:layout_marginTop="16dp" />
 
+    <!-- Dot indicator for ViewPager -->
     <LinearLayout
         android:id="@+id/dotIndicator"
         android:layout_width="match_parent"

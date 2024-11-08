@@ -47,7 +47,6 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
                 context.startActivity(intent); // Memulai aktivitas
             }
         });
-
     }
 
 

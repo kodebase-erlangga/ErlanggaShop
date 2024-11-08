@@ -8,19 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +34,7 @@ public class GaleriFragment extends Fragment {
     private static final String URL = "https://ebook.erlanggaonline.co.id";
     private TextView errorTextView;
     private LinearLayout dotIndicator;
+    private ShimmerFrameLayout shimmerLayout;
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable;
     private final int SLIDE_INTERVAL = 3000;
@@ -46,6 +47,10 @@ public class GaleriFragment extends Fragment {
         errorTextView = view.findViewById(R.id.errorTextView);
         viewPager = view.findViewById(R.id.viewPager);
         dotIndicator = view.findViewById(R.id.dotIndicator);
+        shimmerLayout = view.findViewById(R.id.shimmerLayout);
+
+        // Start shimmer effect initially
+        startShimmer();
 
         // Fetch data from API
         fetchBanner();
@@ -77,8 +82,10 @@ public class GaleriFragment extends Fragment {
                                 viewPager.setAdapter(bannerSliderAdapter);
                                 errorTextView.setVisibility(View.GONE);
 
-                                // Set up dot indicators
-                                setupDotIndicators();
+                                    setupDotIndicators();
+                                    setupViewPager();
+                                    startAutoSlide();
+                                    stopShimmer(); // Stop shimmer after loading data
 
                                 // Set the ViewPager2 to allow looping
                                 viewPager.setClipToPadding(false);
@@ -86,7 +93,6 @@ public class GaleriFragment extends Fragment {
                                 viewPager.setOffscreenPageLimit(3);
                                 viewPager.setPageTransformer(new LoopingPageTransformer());
 
-                                // Start auto slide after setting the adapter
                                 startAutoSlide();
                             } else {
                                 showError("Error: " + jsonResponse.getString("message"));
@@ -194,11 +200,33 @@ public class GaleriFragment extends Fragment {
         }
     }
 
+    private void startShimmer() {
+        shimmerLayout.startShimmer();
+        shimmerLayout.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.GONE);
+        dotIndicator.setVisibility(View.GONE);
+    }
+
+    private void stopShimmer() {
+        shimmerLayout.stopShimmer();
+        shimmerLayout.setVisibility(View.GONE);
+        viewPager.setVisibility(View.VISIBLE);
+        dotIndicator.setVisibility(View.VISIBLE);
+    }
+
     private void showError(String message) {
-        if (errorTextView != null) {
-            errorTextView.setText(message);
-            errorTextView.setVisibility(View.VISIBLE);
-        }
+        stopShimmer();
+        errorTextView.setText(message);
+        errorTextView.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.GONE);
+        dotIndicator.setVisibility(View.GONE);
+    }
+
+    private void setupViewPager() {
+        viewPager.setClipToPadding(false);
+        viewPager.setClipChildren(false);
+        viewPager.setOffscreenPageLimit(3);
+        viewPager.setPageTransformer(new LoopingPageTransformer());
     }
 
     // Custom PageTransformer for looping effect
