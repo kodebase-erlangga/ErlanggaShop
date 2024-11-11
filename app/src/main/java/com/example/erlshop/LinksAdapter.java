@@ -19,9 +19,11 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
     @NonNull
     @Override
     public LinkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_link_card, parent, false);
         return new LinkViewHolder(view);
     }
+
+
 
     @Override
     public void onBindViewHolder(@NonNull LinkViewHolder holder, int position) {
@@ -39,8 +41,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
         TextView textView;
         public LinkViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(android.R.id.text1); // Using built-in layout for simple text display
+            textView = itemView.findViewById(R.id.linkTextView);
         }
     }
 }
-

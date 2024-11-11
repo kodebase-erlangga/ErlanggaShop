@@ -69,4 +69,5 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("androidx.cardview:cardview:1.0.0")
 }

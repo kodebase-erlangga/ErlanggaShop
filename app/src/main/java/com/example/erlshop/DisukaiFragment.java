@@ -111,10 +111,13 @@ public class DisukaiFragment extends Fragment {
     }
 
     private void displayLinks() {
-        linksAdapter = new LinksAdapter(linkList);
+        // Limit the list to the first 7 items, if there are more than 7
+        List<String> limitedLinkList = linkList.size() > 7 ? linkList.subList(0, 7) : linkList;
+
+        linksAdapter = new LinksAdapter(limitedLinkList);
         recyclerView.setAdapter(linksAdapter);
-//        errorTextView.setVisibility(View.GONE);
     }
+
 
     private void showError(String message) {
         if (errorTextView != null) {
