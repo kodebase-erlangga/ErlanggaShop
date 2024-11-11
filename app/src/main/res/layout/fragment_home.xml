@@ -133,7 +133,7 @@
                     android:layout_marginTop="8dp" />
             </LinearLayout>
 
-            <!-- Tambahkan 4 Icon Baru -->
+
             <!-- LinearLayout untuk icon Baru 1 dan keterangannya -->
             <LinearLayout
                 android:id="@+id/iconBaru1Layout"
