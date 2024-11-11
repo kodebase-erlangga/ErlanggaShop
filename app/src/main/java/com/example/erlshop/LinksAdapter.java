@@ -4,9 +4,13 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHolder> {
@@ -33,6 +37,11 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
         holder.titleTextView.setText(title);  // Set the title
         holder.linkTextView.setText(link);    // Set the URL
         holder.linkTextView.setTextColor(Color.parseColor("#FF000000"));
+
+        // Load the profile image using Glide
+        Glide.with(holder.profileImageView.getContext())
+                .load(R.drawable.baseline_account_box_24) // Load a drawable resource as the image
+                .into(holder.profileImageView);
     }
 
     @Override
@@ -41,10 +50,12 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
     }
 
     public static class LinkViewHolder extends RecyclerView.ViewHolder {
+        ImageView profileImageView;  // Add ImageView reference
         TextView titleTextView, linkTextView;
 
         public LinkViewHolder(@NonNull View itemView) {
             super(itemView);
+            profileImageView = itemView.findViewById(R.id.profileImageView);  // Initialize profileImageView
             titleTextView = itemView.findViewById(R.id.titleTextView);
             linkTextView = itemView.findViewById(R.id.linkTextView);
         }

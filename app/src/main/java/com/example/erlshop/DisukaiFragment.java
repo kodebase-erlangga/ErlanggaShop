@@ -1,9 +1,11 @@
 package com.example.erlshop;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,20 +33,23 @@ public class DisukaiFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_disukai, container, false);
+        View view = inflater.inflate(R.layout.fragment_disukai, container, false); // Ensure the correct layout is inflated
 
-        // Initialize RecyclerView and TextView for error messages
+        // Ensure this is the right layout
+//        ImageView profileImageView = view.findViewById(R.id.profileImageView);
+//        profileImageView.setImageResource(R.drawable.baseline_account_circle_24); // Set the image
+
         recyclerView = view.findViewById(R.id.recyclerViewDisukai);
         errorTextView = view.findViewById(R.id.errorTextView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        // Fetch links from the database to display
         fetchLinksFromDatabase();
         fetchLinks();
+        dummyBanner(view);
 
         return view;
     }
+
 
     private void fetchLinksFromDatabase() {
         DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
@@ -53,7 +58,7 @@ public class DisukaiFragment extends Fragment {
         List<String> savedLinks = databaseHelper.getAllLinks();
         linkList.addAll(savedLinks);
 
-        displayLinks(); // Display links after fetching them from the database
+        displayLinks();
     }
 
     private void fetchLinks() {
@@ -129,6 +134,21 @@ public class DisukaiFragment extends Fragment {
         linksAdapter = new LinksAdapter(titleList, limitedLinkList);
         recyclerView.setAdapter(linksAdapter);
     }
+
+    private void dummyBanner(View view) {
+        // Find the ImageView by ID
+        ImageView profileImageView = view.findViewById(R.id.profileImageView);
+
+        // Log to check if ImageView is found
+        if (profileImageView == null) {
+            Log.e("DisukaiFragment", "profileImageView is null! Make sure the ImageView exists in the layout.");
+        } else {
+            // Set the profile image
+            profileImageView.setImageResource(R.drawable.baseline_account_circle_24);
+        }
+    }
+
+
 
     private void showError(String message) {
         if (errorTextView != null) {
