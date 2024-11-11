@@ -8,19 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.shimmer.ShimmerFrameLayout;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +52,11 @@ public class GaleriFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         dotIndicator = view.findViewById(R.id.dotIndicator);
         shimmerLayout = view.findViewById(R.id.shimmerLayout);
+
+        // Check if device is a tablet and adjust layout parameters
+        if (ScreenUtils.isTablet(getContext())) {
+            adjustLayoutForTablet(view);
+        }
 
         // Start shimmer effect initially
         startShimmer();
@@ -82,10 +91,10 @@ public class GaleriFragment extends Fragment {
                                 viewPager.setAdapter(bannerSliderAdapter);
                                 errorTextView.setVisibility(View.GONE);
 
-                                    setupDotIndicators();
-                                    setupViewPager();
-                                    startAutoSlide();
-                                    stopShimmer(); // Stop shimmer after loading data
+                                setupDotIndicators();
+                                setupViewPager();
+                                startAutoSlide();
+                                stopShimmer(); // Stop shimmer after loading data
 
                                 // Set the ViewPager2 to allow looping
                                 viewPager.setClipToPadding(false);
@@ -123,6 +132,24 @@ public class GaleriFragment extends Fragment {
 
         Volley.newRequestQueue(requireContext()).add(stringRequest);
     }
+
+    private void adjustLayoutForTablet(View view) {
+        // Convert 150dp to pixels
+        int heightInPixels = (int) (300 * getResources().getDisplayMetrics().density);
+
+        // Adjust ViewPager to match_parent width and 150dp height for tablet
+        ViewGroup.LayoutParams viewPagerLayoutParams = viewPager.getLayoutParams();
+        viewPagerLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        viewPagerLayoutParams.height = heightInPixels;  // Set height in pixels
+        viewPager.setLayoutParams(viewPagerLayoutParams);
+
+        // Adjust ShimmerLayout to match_parent width and 150dp height for tablet
+        ViewGroup.LayoutParams shimmerLayoutParams = shimmerLayout.getLayoutParams();
+        shimmerLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        shimmerLayoutParams.height = heightInPixels;  // Set height in pixels
+        shimmerLayout.setLayoutParams(shimmerLayoutParams);
+    }
+
 
     private void setupDotIndicators() {
         // Clear existing indicators
@@ -167,12 +194,10 @@ public class GaleriFragment extends Fragment {
                     params.width = (int) getResources().getDimension(R.dimen.dot_inactive_size); // Ukuran titik tidak aktif
                     params.height = (int) getResources().getDimension(R.dimen.dot_inactive_size);
                 }
-
                 dot.setLayoutParams(params);
             }
         }
     }
-
 
     private void startAutoSlide() {
         runnable = new Runnable() {
@@ -225,6 +250,7 @@ public class GaleriFragment extends Fragment {
         viewPager.setVisibility(View.GONE);
         dotIndicator.setVisibility(View.GONE);
     }
+
     private void setupViewPager() {
         viewPager.setClipToPadding(false);
         viewPager.setClipChildren(false);
