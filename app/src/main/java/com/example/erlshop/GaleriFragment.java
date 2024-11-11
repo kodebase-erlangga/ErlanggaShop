@@ -134,21 +134,30 @@ public class GaleriFragment extends Fragment {
     }
 
     private void adjustLayoutForTablet(View view) {
-        // Convert 150dp to pixels
+        // Check if the device is in landscape or portrait orientation
+        int orientation = getResources().getConfiguration().orientation;
+
+        // Convert 300dp to pixels
         int heightInPixels = (int) (300 * getResources().getDisplayMetrics().density);
 
-        // Adjust ViewPager to match_parent width and 150dp height for tablet
+        // If the device is in landscape, set a different height
+        if (orientation == getResources().getConfiguration().ORIENTATION_LANDSCAPE) {
+            heightInPixels = (int) (410 * getResources().getDisplayMetrics().density);  // Adjust for landscape (e.g., 200dp)
+        }
+
+        // Adjust ViewPager to match_parent width and appropriate height for tablet
         ViewGroup.LayoutParams viewPagerLayoutParams = viewPager.getLayoutParams();
         viewPagerLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        viewPagerLayoutParams.height = heightInPixels;  // Set height in pixels
+        viewPagerLayoutParams.height = heightInPixels;  // Set height in pixels based on orientation
         viewPager.setLayoutParams(viewPagerLayoutParams);
 
-        // Adjust ShimmerLayout to match_parent width and 150dp height for tablet
+        // Adjust ShimmerLayout to match_parent width and appropriate height for tablet
         ViewGroup.LayoutParams shimmerLayoutParams = shimmerLayout.getLayoutParams();
         shimmerLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        shimmerLayoutParams.height = heightInPixels;  // Set height in pixels
+        shimmerLayoutParams.height = heightInPixels;  // Set height in pixels based on orientation
         shimmerLayout.setLayoutParams(shimmerLayoutParams);
     }
+
 
 
     private void setupDotIndicators() {

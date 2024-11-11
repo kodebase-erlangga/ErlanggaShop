@@ -39,9 +39,9 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
         holder.linkTextView.setTextColor(Color.parseColor("#FF000000"));
 
         // Load the profile image using Glide
-        Glide.with(holder.profileImageView.getContext())
+        Glide.with(holder.imageBanner.getContext())
                 .load(R.drawable.baseline_account_box_24) // Load a drawable resource as the image
-                .into(holder.profileImageView);
+                .into(holder.imageBanner);
     }
 
     @Override
@@ -50,12 +50,12 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
     }
 
     public static class LinkViewHolder extends RecyclerView.ViewHolder {
-        ImageView profileImageView;  // Add ImageView reference
+        ImageView imageBanner;  // Add ImageView reference
         TextView titleTextView, linkTextView;
 
         public LinkViewHolder(@NonNull View itemView) {
             super(itemView);
-            profileImageView = itemView.findViewById(R.id.profileImageView);  // Initialize profileImageView
+            imageBanner = itemView.findViewById(R.id.imageBanner);  // Initialize profileImageView
             titleTextView = itemView.findViewById(R.id.titleTextView);
             linkTextView = itemView.findViewById(R.id.linkTextView);
         }
