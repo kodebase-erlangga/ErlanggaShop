@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class DisukaiFragment extends Fragment {
         List<String> savedLinks = databaseHelper.getAllLinks();
         linkList.addAll(savedLinks);
 
-        displayLinks();
+        displayLinks(); // Display links after fetching them from the database
     }
 
     private void fetchLinks() {
@@ -114,10 +115,20 @@ public class DisukaiFragment extends Fragment {
         // Limit the list to the first 7 items, if there are more than 7
         List<String> limitedLinkList = linkList.size() > 7 ? linkList.subList(0, 7) : linkList;
 
-        linksAdapter = new LinksAdapter(limitedLinkList);
+        // Assuming you have predefined titles for each link
+        List<String> titleList = Arrays.asList(
+                "Shop Buku Erlangga",
+                "Erlanggapedia",
+                "Erklika",
+                "Kelasku",
+                "Erlangga Exam",
+                "E-Library Erlangga",
+                "E-Book Erlangga"
+        );
+
+        linksAdapter = new LinksAdapter(titleList, limitedLinkList);
         recyclerView.setAdapter(linksAdapter);
     }
-
 
     private void showError(String message) {
         if (errorTextView != null) {

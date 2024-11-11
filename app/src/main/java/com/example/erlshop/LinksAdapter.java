@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHolder> {
-    private List<String> linkList;
+    private List<String> titles;
+    private List<String> links;
 
-    public LinksAdapter(List<String> linkList) {
-        this.linkList = linkList;
+    public LinksAdapter(List<String> titles, List<String> links) {
+        this.titles = titles;
+        this.links = links;
     }
 
     @NonNull
@@ -23,25 +25,28 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinkViewHold
         return new LinkViewHolder(view);
     }
 
-
-
     @Override
     public void onBindViewHolder(@NonNull LinkViewHolder holder, int position) {
-        String link = linkList.get(position);
-        holder.textView.setText(link); // Display the URL
-        holder.textView.setTextColor(Color.parseColor("#FF000000"));
+        String title = titles.get(position);
+        String link = links.get(position);
+
+        holder.titleTextView.setText(title);  // Set the title
+        holder.linkTextView.setText(link);    // Set the URL
+        holder.linkTextView.setTextColor(Color.parseColor("#FF000000"));
     }
 
     @Override
     public int getItemCount() {
-        return linkList.size();
+        return links.size();
     }
 
     public static class LinkViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView titleTextView, linkTextView;
+
         public LinkViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.linkTextView);
+            titleTextView = itemView.findViewById(R.id.titleTextView);
+            linkTextView = itemView.findViewById(R.id.linkTextView);
         }
     }
 }
