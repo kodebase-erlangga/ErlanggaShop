@@ -77,7 +77,6 @@ public class GaleriFragment extends Fragment {
                             String erlStatusId = jsonResponse.getString("erlStatusId");
                             if (erlStatusId.equals("true")) {
                                 JSONArray bannerArray = jsonResponse.getJSONArray("data");
-
                                 for (int i = 0; i < bannerArray.length() && i < 10; i++) {
                                     JSONObject bannerItem = bannerArray.getJSONObject(i);
                                     if (bannerItem.has("url_banner")) {

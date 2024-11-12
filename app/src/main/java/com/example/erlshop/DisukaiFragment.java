@@ -1,11 +1,9 @@
 package com.example.erlshop;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,27 +27,22 @@ public class DisukaiFragment extends Fragment {
     private LinksAdapter linksAdapter;
     private TextView errorTextView;
     private List<String> linkList = new ArrayList<>();
+    private List<String> bannerList = new ArrayList<>();  // List for banner URLs
     private static final String URL = "https://ebook.erlanggaonline.co.id";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_disukai, container, false); // Ensure the correct layout is inflated
-
-        // Ensure this is the right layout
-//        ImageView profileImageView = view.findViewById(R.id.profileImageView);
-//        profileImageView.setImageResource(R.drawable.baseline_account_circle_24); // Set the image
+        View view = inflater.inflate(R.layout.fragment_disukai, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerViewDisukai);
         errorTextView = view.findViewById(R.id.errorTextView);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         fetchLinksFromDatabase();
         fetchLinks();
-        dummyBanner(view);
 
         return view;
     }
-
 
     private void fetchLinksFromDatabase() {
         DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
@@ -74,18 +67,21 @@ public class DisukaiFragment extends Fragment {
                                 JSONArray linksArray = jsonResponse.getJSONArray("data");
                                 DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
 
-                                // Clear previous links from database before adding new ones
                                 databaseHelper.clearLinks();
+                                linkList.clear();
+                                bannerList.clear();
 
                                 for (int i = 0; i < linksArray.length(); i++) {
                                     JSONObject linkItem = linksArray.getJSONObject(i);
                                     String linkUrl = linkItem.getString("url_produk");
-                                    linkList.add(linkUrl);
+                                    String bannerUrl = linkItem.getString("url_banner");
 
-                                    // Save link to database
+                                    linkList.add(linkUrl);
+                                    bannerList.add(bannerUrl);
+
                                     databaseHelper.addLink(linkUrl);
                                 }
-                                displayLinks(); // Display the URLs in the RecyclerView
+                                displayLinks();  // Display links and banners in the RecyclerView
                             } else {
                                 showError("Error: " + jsonResponse.getString("message"));
                             }
@@ -117,38 +113,17 @@ public class DisukaiFragment extends Fragment {
     }
 
     private void displayLinks() {
-        // Limit the list to the first 7 items, if there are more than 7
         List<String> limitedLinkList = linkList.size() > 7 ? linkList.subList(0, 7) : linkList;
+        List<String> limitedBannerList = bannerList.size() > 7 ? bannerList.subList(0, 7) : bannerList;
 
-        // Assuming you have predefined titles for each link
         List<String> titleList = Arrays.asList(
-                "Shop Buku Erlangga",
-                "Erlanggapedia",
-                "Erklika",
-                "Kelasku",
-                "Erlangga Exam",
-                "E-Library Erlangga",
-                "E-Book Erlangga"
+                "Shop Buku Erlangga", "Erlanggapedia", "Erklika",
+                "Kelasku", "Erlangga Exam", "E-Library Erlangga", "E-Book Erlangga"
         );
 
-        linksAdapter = new LinksAdapter(titleList, limitedLinkList);
+        linksAdapter = new LinksAdapter(titleList, limitedLinkList, limitedBannerList);
         recyclerView.setAdapter(linksAdapter);
     }
-
-    private void dummyBanner(View view) {
-        // Find the ImageView by ID
-        ImageView profileImageView = view.findViewById(R.id.profileImageView);
-
-        // Log to check if ImageView is found
-        if (profileImageView == null) {
-            Log.e("DisukaiFragment", "profileImageView is null! Make sure the ImageView exists in the layout.");
-        } else {
-            // Set the profile image
-            profileImageView.setImageResource(R.drawable.baseline_account_circle_24);
-        }
-    }
-
-
 
     private void showError(String message) {
         if (errorTextView != null) {
